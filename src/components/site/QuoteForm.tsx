@@ -13,7 +13,7 @@ const MAX_SIZE = 10 * 1024 * 1024;
 type Files = { file: File; name: string; size: number }[];
 const empty = { ambiente: "", objetivo: "", cidade: "", medidas: "", prazo: "", investimento: "", nome: "", telefone: "", email: "", aceitePrivacidade: false };
 type Data = typeof empty;
-type Errors = Partial<Record<keyof Data | "files", string>>;
+type Errors = Partial<Record<keyof Data | "files", string | undefined>>;
 
 export function validateStep(step: number, d: Data): Errors {
   const e: Errors = {};
@@ -89,7 +89,7 @@ export function QuoteForm() {
   const next = () => {
     const e = validateStep(step, d);
     setErrors(e);
-    if (Object.keys(e).length === 0) go(step + 1);
+    if (!Object.values(e).some(Boolean)) go(step + 1);
   };
   const submit = async () => {
     const e = validateStep(2, d);
