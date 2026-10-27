@@ -121,7 +121,8 @@ function ClosingCallout({ title = "Vamos conversar sobre seu próximo projeto?",
 
 function PartnerNames() {
   const { data } = trpc.site.partners.useQuery(undefined, { retry: false, staleTime: 60_000 });
-  const names = data?.length ? data.map((partner) => partner.title) : ["EMBRACON CONSÓRCIOS", "LEME"];
+  const names = (data ?? []).map((partner) => partner.title).filter(Boolean);
+  if (names.length === 0) return null;
   return <div className="mp-partner-list">{names.map((name, index) => <span key={`${name}-${index}`}>{name}</span>)}</div>;
 }
 
