@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Structure
+- Lead capture goes through the LeadRepository interface in src/lib/leads.ts; swap the demo implementation for a real backend later without touching the form.
+- Any future AI visual must render AI_VISUAL_DISCLAIMER from src/lib/leads.ts.
