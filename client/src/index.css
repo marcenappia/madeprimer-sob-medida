@@ -372,3 +372,50 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .mp-info-panel h2{font-family:var(--font-heading,Georgia,serif);font-size:clamp(1.5rem,3vw,2rem);margin:0 0 .8rem}
 .mp-info-panel p{margin:0 0 1.5rem;line-height:1.7}
 @media(max-width:760px){.mp-value-grid{grid-template-columns:1fr}.mp-about-mission{grid-template-columns:1fr}.mp-form-grid,.mp-contact-details{grid-template-columns:1fr}.mp-form-wide{grid-column:auto}}
+
+
+/* Página Processo — adaptação do layout editorial para o design system MadePrimer */
+.mp-process-detail-list {
+  margin-top: clamp(2rem, 5vw, 4rem);
+  border-top: 1px solid var(--mp-border, rgba(20, 20, 20, 0.14));
+}
+.mp-process-detail-row {
+  display: grid;
+  grid-template-columns: 5rem minmax(10rem, 15rem) minmax(0, 1fr);
+  align-items: baseline;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding: clamp(1.5rem, 3vw, 2rem) 0;
+  border-bottom: 1px solid var(--mp-border, rgba(20, 20, 20, 0.14));
+}
+.mp-process-detail-number {
+  color: var(--mp-muted, rgba(20, 20, 20, 0.28));
+  font-family: var(--font-heading, inherit);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+}
+.mp-process-detail-row h2 {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.mp-process-detail-row p {
+  max-width: 42rem;
+  margin: 0;
+  color: var(--mp-text-muted, rgba(20, 20, 20, 0.66));
+  font-size: 0.925rem;
+  line-height: 1.8;
+}
+.mp-process-cta {
+  padding-top: 2rem;
+}
+@media (max-width: 640px) {
+  .mp-process-detail-row {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: 0.75rem 1rem;
+  }
+  .mp-process-detail-row p {
+    grid-column: 2;
+  }
+}
