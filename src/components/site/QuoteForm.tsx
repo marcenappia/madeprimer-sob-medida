@@ -41,7 +41,7 @@ export function validateStep(step: number, d: Data): Errors {
 const fieldCls = (err?: string) =>
   cn("w-full rounded-sm border bg-card px-4 py-3.5 text-base outline-none transition-colors focus:border-wood", err ? "border-destructive" : "border-input");
 
-function Field({ id, label, error, hint, children }: { id: string; label: string; error?: string; hint?: string; children: ReactNode }) {
+function Field({ id, label, error, hint, children }: { id: string; label: string; error?: string | undefined; hint?: string; children: ReactNode }) {
   return (
     <div>
       <label htmlFor={id} className="mb-2 block text-sm font-semibold">{label}</label>

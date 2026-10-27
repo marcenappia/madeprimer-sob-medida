@@ -47,7 +47,7 @@ export function PortfolioPreview() {
       </SectionTitle>
       <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
         {gallery.slice(0, 3).map((g, i) => (
-          <Placeholder key={g.label} label={g.label} ratio={i === 0 ? "aspect-[3/4]" : "aspect-[3/4]"} className={i === 0 ? "col-span-2 md:col-span-1" : ""} />
+          <Placeholder key={g.label} label={g.label} ratio="aspect-[3/4]" className={i === 0 ? "col-span-2 md:col-span-1" : ""} />
         ))}
       </div>
       <Link to="/portfolio" className={btn("outline", "mt-10")}>Ver portfólio</Link>

@@ -7,7 +7,7 @@ export const Route = createFileRoute("/business")({
     <>
       <PageHero eyebrow="Business" title="Ambientes que representam negócios." intro="Mobiliário corporativo e comercial que traduz a identidade da marca e funciona no uso intenso do dia a dia." />
       <section className="container-site grid gap-x-5 gap-y-12 pb-24 sm:grid-cols-2">
-        {[["Escritórios", "Estações, salas de reunião e armazenamento."], ["Lojas", "Expositores e balcões alinhados à marca."], ["Recepções", "A primeira impressão do seu espaço."], ["Clínicas e consultórios", "Funcionalidade com acolhimento."]].map(([t, d]) => (
+        {([["Escritórios", "Estações, salas de reunião e armazenamento."], ["Lojas", "Expositores e balcões alinhados à marca."], ["Recepções", "A primeira impressão do seu espaço."], ["Clínicas e consultórios", "Funcionalidade com acolhimento."]] as const).map(([t, d]) => (
           <article key={t}>
             <Placeholder label={t} ratio="aspect-[16/10]" />
             <h2 className="mt-5 text-2xl">{t}</h2>
