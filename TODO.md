@@ -31,5 +31,5 @@
 
 ## 6. Documentação, GitHub e entrega sem publicação oficial
 - [x] Atualizar README e plano do repositório para substituir o escopo demonstrativo antigo: documentar site, runtime, schema/migrações, variáveis/segredos exigidos, setup da allowlist OAuth, privacidade e módulos do painel, sem incluir valores de segredos.
-- [ ] Manter a árvore de código sincronizada entre runtime Webdev e `marcenappia/madeprimer-sob-medida`, preservando as histórias existentes dos dois repositórios; usar commits/fast-forward normais e nunca force-push ou reescrever commits publicados. Não criar outro repositório GitHub nem alterar domínio oficial.
+- [x] Manter a árvore de código sincronizada entre runtime Webdev e `marcenappia/madeprimer-sob-medida`, preservando as histórias existentes dos dois repositórios; usar commits/fast-forward normais e nunca force-push ou reescrever commits publicados. Não criar outro repositório GitHub nem alterar domínio oficial.
 - [x] Não publicar no domínio oficial nem habilitar publicação automática. A versão fica em Preview até autorização posterior. Não incluir pagamentos, CRM externo ou chamadas de IA nesta entrega.
