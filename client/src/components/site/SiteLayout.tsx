@@ -11,7 +11,8 @@ function phoneDigits(value: string) {
 
 function PartnerStrip() {
   const partners = trpc.site.partners.useQuery(undefined, { retry: false, staleTime: 60_000 });
-  const names = partners.data?.length ? partners.data.map((partner) => partner.title) : ["EMBRACON CONSÓRCIOS", "LEME"];
+  const names = (partners.data ?? []).map((partner) => partner.title).filter(Boolean);
+  if (names.length === 0) return null;
   return <section className="mp-partner-strip" aria-label="Parceiros MadePrimer">
     <p className="mp-eyebrow">PARCEIROS</p>
     <div className="mp-partner-strip-track">{Array.from({ length: 6 }, (_, cycle) => <div className="mp-partner-strip-pair" key={cycle} aria-hidden={cycle > 0 ? true : undefined}>{names.map((name, index) => <span key={`${name}-${index}`}>{name}</span>)}</div>)}</div>
