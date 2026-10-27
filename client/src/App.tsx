@@ -17,6 +17,7 @@ import {
   PortfolioPage,
   PrivacyPage,
   ProcessPage,
+  ProjectDetailPage,
   ResidentialPage,
 } from "./pages/MarketingPages";
 import QuotePage from "./pages/Quote";
@@ -29,6 +30,7 @@ function PublicRoute({ children }: { children: ReactNode }) {
 function Router() {
   return <Switch>
     <Route path="/" component={Home} />
+    <Route path="/projetos/:slug" component={(params) => <PublicRoute><ProjectDetailPage params={params} /></PublicRoute>} />
     <Route path="/projetos" component={() => <PublicRoute><PortfolioPage /></PublicRoute>} />
     <Route path="/portfolio" component={() => <PublicRoute><PortfolioPage /></PublicRoute>} />
     <Route path="/residencial" component={() => <PublicRoute><ResidentialPage /></PublicRoute>} />
