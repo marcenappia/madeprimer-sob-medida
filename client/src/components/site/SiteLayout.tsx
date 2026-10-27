@@ -38,7 +38,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         </section>
         <section><h2>NAVEGAÇÃO</h2><ul className="mp-footer-list">{footerNavigation.map((item) => <li key={item.href}><Link href={item.href}>{item.label}</Link></li>)}</ul></section>
         <section><h2>CONTATO</h2><address className="mp-contact-list"><a href={`https://wa.me/${phoneDigits(primaryPhone)}`}>{primaryPhone}</a><a href={`tel:+${phoneDigits(secondaryPhone)}`}>{secondaryPhone}</a><span>{address}</span><span>{contactDefaults.city}</span></address></section>
-        <section><h2>REDES</h2><ul className="mp-footer-list mp-social-list">{socialLinks.map((social) => <li key={social.label}>{social.href ? <a href={social.href} target="_blank" rel="noreferrer">{social.label}</a> : <span>{social.label}</span>}</li>)}</ul></section>
+        <section><h2>REDES</h2><ul className="mp-footer-list mp-social-list">{socialLinks.filter((social) => social.href).map((social) => <li key={social.label}><a href={social.href!} target="_blank" rel="noreferrer">{social.label}</a></li>)}</ul></section>
       </div>
       <div className="mp-footer-bottom"><span>© 2026 MadePrimer Móveis sob medida. Todos os direitos reservados.</span><Link href="/privacidade">Política de privacidade</Link><Link href="/admin">Painel administrativo</Link></div>
     </footer>
