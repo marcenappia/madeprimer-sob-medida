@@ -1,3 +1,51 @@
+
+/* Editorial design system — home e landing BUSINESS */
+.mp-hero-editorial{isolation:isolate;display:flex;align-items:flex-end;min-height:min(820px,94svh);padding:clamp(150px,17vh,210px) clamp(24px,7vw,112px) clamp(75px,10vh,120px);overflow:hidden;background:#0b171d}
+.mp-hero-image,.mp-hero-shade{position:absolute;inset:0;width:100%;height:100%}
+.mp-hero-image{z-index:-2;object-fit:cover;object-position:center 54%;opacity:.7}
+.mp-hero-shade{z-index:-1;background:linear-gradient(90deg,rgba(7,18,22,.91),rgba(7,18,22,.68) 48%,rgba(7,18,22,.14)),linear-gradient(0deg,rgba(7,18,22,.5),transparent 60%)}
+.mp-hero-editorial .mp-hero-content{width:min(850px,100%);position:relative}
+.mp-hero-editorial h1{max-width:900px;font-size:clamp(48px,7.1vw,104px);line-height:.99;letter-spacing:-.045em}
+.mp-hero-editorial h1 em,.mp-corporate-hero h1 em{color:var(--mp-olive-light);font-weight:400}
+.mp-hero-lead{max-width:560px;margin:1.5rem 0 2rem;color:var(--mp-paper-muted);font-size:clamp(15px,1.4vw,18px);line-height:1.8}
+.mp-hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:1.5rem}
+.mp-hero-secondary{font-size:10px;letter-spacing:.14em;text-decoration:none;color:var(--mp-paper);padding:12px 0;border-bottom:1px solid var(--mp-olive)}
+.mp-hero-index{position:absolute;right:clamp(22px,5vw,80px);bottom:36px;color:var(--mp-paper-muted);font-size:9px;letter-spacing:.18em}
+.mp-portfolio-empty{padding:clamp(24px,5vw,56px);border-block:1px solid var(--mp-line);max-width:900px}
+.mp-portfolio-empty p:not(.mp-eyebrow){max-width:600px;line-height:1.8;color:var(--mp-paper-muted)}
+.mp-portfolio-empty .mp-text-link{display:inline-flex;margin-top:1rem}
+.mp-corporate-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);min-height:78vh;padding:clamp(140px,15vh,190px) clamp(22px,6vw,96px) clamp(65px,8vw,110px);gap:clamp(2rem,6vw,7rem);align-items:center;background:var(--mp-ink-deep);color:var(--mp-paper)}
+.mp-corporate-hero-copy{max-width:700px}
+.mp-corporate-hero h1{margin:1rem 0 1.5rem;font-family:Georgia,"Times New Roman",serif;font-size:clamp(46px,6.2vw,86px);font-weight:400;line-height:1.02;letter-spacing:-.04em}
+.mp-corporate-hero .mp-lead{max-width:560px;color:var(--mp-paper-muted);font-size:clamp(15px,1.3vw,18px);line-height:1.8;margin-bottom:2rem}
+.mp-corporate-hero-image{min-width:0}
+.mp-corporate-hero-image img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;max-height:680px}
+.mp-corporate-hero-image span{display:block;margin-top:.7rem;color:var(--mp-paper-muted);font-size:10px;line-height:1.6}
+.mp-corporate-intro{display:grid;grid-template-columns:minmax(150px,.65fr) minmax(0,1.2fr) minmax(0,1fr);gap:clamp(1rem,4vw,4rem);align-items:start;padding:clamp(65px,9vw,130px) clamp(22px,7vw,110px);background:var(--mp-paper);color:var(--mp-ink)}
+.mp-corporate-intro .mp-eyebrow{margin-top:.5rem}
+.mp-corporate-intro h2,.mp-corporate-process h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(30px,4vw,56px);line-height:1.1;letter-spacing:-.035em;margin:0}
+.mp-corporate-intro>p:last-child{font-size:15px;line-height:1.85;color:var(--mp-ink-soft);margin:0}
+.mp-corporate-applications,.mp-corporate-portfolio{padding:clamp(65px,8vw,110px) clamp(22px,7vw,110px)}
+.mp-corporate-applications{background:#e6e2d8;color:var(--mp-ink)}
+.mp-corporate-portfolio{background:var(--mp-ink);color:var(--mp-paper)}
+.mp-corporate-applications .mp-section-heading,.mp-corporate-portfolio .mp-section-heading{display:flex;justify-content:space-between;align-items:end;gap:2rem;margin-bottom:2.5rem}
+.mp-corporate-applications .mp-section-heading h2,.mp-corporate-portfolio .mp-section-heading h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(38px,5vw,64px);line-height:1.05;margin:.5rem 0 0}
+.mp-corporate-note{max-width:360px;font-size:13px;line-height:1.7;opacity:.75}
+.mp-application-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid rgba(19,35,43,.25)}
+.mp-application-grid article{padding:1.5rem 1.2rem 1.5rem 0;border-right:1px solid rgba(19,35,43,.2);margin-right:1.2rem}
+.mp-application-grid article:last-child{border:0;margin:0}
+.mp-application-grid article>span{font-size:11px;letter-spacing:.14em;color:#84794f}
+.mp-application-grid h3{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,2vw,27px);font-weight:400;line-height:1.2;margin:2.5rem 0 1rem}
+.mp-application-grid p{font-size:13px;line-height:1.75;color:#45545a}
+.mp-corporate-portfolio .mp-project-grid{margin-top:2rem}
+.mp-corporate-process{padding:clamp(65px,8vw,110px) clamp(22px,7vw,110px);background:#d9d5ca;color:var(--mp-ink)}
+.mp-corporate-process>h2{max-width:850px;margin:1rem 0 3rem}
+.mp-corporate-process ol{list-style:none;padding:0;margin:0 0 2rem;border-top:1px solid rgba(19,35,43,.25)}
+.mp-corporate-process li{display:grid;grid-template-columns:4rem minmax(0,1fr);gap:1rem;align-items:center;padding:1.2rem 0;border-bottom:1px solid rgba(19,35,43,.25)}
+.mp-corporate-process li span{color:#81774d;font-size:12px;letter-spacing:.1em}
+.mp-corporate-process li p{margin:0;font-size:12px;letter-spacing:.12em}
+@media(max-width:850px){.mp-corporate-hero{grid-template-columns:1fr;min-height:0;padding-top:140px}.mp-corporate-hero-image img{aspect-ratio:16/10;max-height:none}.mp-corporate-intro{grid-template-columns:1fr 1.4fr}.mp-corporate-intro>p:last-child{grid-column:2}.mp-application-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mp-application-grid article:nth-child(2){border-right:0;margin-right:0}.mp-application-grid article:nth-child(3),.mp-application-grid article:nth-child(4){border-top:1px solid rgba(19,35,43,.2)}}
+@media(max-width:600px){.mp-hero-editorial{min-height:88svh;padding:145px 22px 82px}.mp-hero-editorial h1{font-size:clamp(43px,12vw,66px)}.mp-hero-index{font-size:8px;right:20px;bottom:20px}.mp-hero-actions{align-items:flex-start;flex-direction:column;gap:1rem}.mp-corporate-hero{padding:125px 21px 55px;gap:2rem}.mp-corporate-hero h1{font-size:clamp(43px,12vw,62px)}.mp-corporate-intro{grid-template-columns:1fr;gap:1.25rem;padding:65px 21px}.mp-corporate-intro>p:last-child{grid-column:auto}.mp-corporate-applications,.mp-corporate-portfolio,.mp-corporate-process{padding:65px 21px}.mp-corporate-applications .mp-section-heading,.mp-corporate-portfolio .mp-section-heading{align-items:flex-start;flex-direction:column;gap:.5rem}.mp-application-grid article{padding:1.2rem .8rem 1.2rem 0;margin-right:.8rem}.mp-application-grid h3{margin:1.5rem 0 .8rem;font-size:21px}.mp-application-grid p{font-size:12px}}
 @import "tailwindcss";
 @import "tw-animate-css";
 
