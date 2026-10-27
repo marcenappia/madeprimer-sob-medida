@@ -1,7 +1,5 @@
-import { createApiApp } from "../server/_core/app";
+import { createApiApp } from "../server/_core/app.bundle.js";
 
-// Vercel expects the exported handler to be the Express application itself.
-// app.ts exports a factory, not a default app instance.
-const app = createApiApp();
-
-export default app;
+// Use the build-generated bundle so Vercel resolves the server's internal
+// modules consistently in its serverless Node runtime.
+export default createApiApp();
