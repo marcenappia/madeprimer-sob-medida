@@ -67,7 +67,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .mp-nav-cta:hover { background: var(--mp-olive); color: var(--mp-ink-deep); }
 .mp-menu-toggle { display: none; border: 1px solid var(--mp-line); color: var(--mp-paper); background: transparent; padding: 9px 12px; font-size: 10px; letter-spacing: .13em; }
 .mp-main { min-height: 50vh; }
-.mp-hero { position: relative; min-height: min(850px, 94vh); display: flex; align-items: center; padding: 160px clamp(22px, 10vw, 160px) 110px; background: radial-gradient(ellipse at 72% 70%, rgba(49, 66, 63, .42), transparent 43%), linear-gradient(120deg, #101f26, #142a32 63%, #102128); }
+.mp-hero { position: relative; min-height: min(850px, 94vh); display: flex; align-items: center; padding: 160px clamp(22px, 10vw, 160px) 110px; background: linear-gradient(90deg, rgba(12, 24, 29, .91) 0%, rgba(12, 24, 29, .70) 45%, rgba(12, 24, 29, .28) 100%), url('/assets/cozinha-madeprimer.png') center 55% / cover no-repeat, linear-gradient(120deg, #101f26, #142a32 63%, #102128); }
 .mp-hero:after { content: ""; position: absolute; width: min(36vw, 470px); aspect-ratio: 1; right: 8%; bottom: 10%; border: 1px solid rgba(193, 182, 129, .18); border-radius: 50%; box-shadow: 0 0 0 28px rgba(193, 182, 129, .025), 0 0 0 76px rgba(193, 182, 129, .018); }
 .mp-hero-rule { position: absolute; right: 15%; top: 21%; bottom: 19%; width: 1px; background: linear-gradient(transparent, rgba(193,182,129,.35), transparent); }
 .mp-hero-content { position: relative; z-index: 1; width: min(850px, 78vw); }
