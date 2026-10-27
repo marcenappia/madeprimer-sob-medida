@@ -4,6 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { companyDescription, contactDefaults, corporateDescription, partnerDescription, portfolioItems, processSteps, residentialDescription, type PortfolioItem } from "../components/site/content";
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
+const slugify = (value: string) => value.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 function SectionIntro({ eyebrow, title, children }: { eyebrow?: string; title: ReactNode; children?: ReactNode }) {
   return <header className="mp-section-intro">{eyebrow && <p className="mp-eyebrow">{eyebrow}</p>}<h1>{title}</h1>{children && <p className="mp-lead">{children}</p>}</header>;
 }
@@ -21,7 +22,7 @@ function PortfolioGrid({ filter = "all" }: { filter?: "all" | "residential" | "c
   const items = sourceItems.filter((item) => filter === "all" || (filter === "corporate" ? item.category.toUpperCase().includes("CORPORATIVO") : !item.category.toUpperCase().includes("CORPORATIVO")));
   return <div className="mp-project-grid">{items.map((item) => <article className="mp-project-card" key={`${item.number}-${item.category}-${item.title}`}>
     {item.image ? <img className="mp-project-image" src={item.image} alt={item.alt || item.title} loading="lazy" /> : <div className="mp-image-placeholder" role="img" aria-label={`Imagem temporária: ${item.title}`}><span>Imagem temporária</span></div>}
-    <div className="mp-project-copy"><div className="mp-project-meta"><span>{item.number}</span><p className="mp-eyebrow">{item.category}</p></div><h2>{item.title}</h2></div>
+    <Link href={`/projetos/${slugify(item.title)}`} className="mp-project-detail-link" aria-label={`Ver detalhes do projeto: ${item.title}`}><div className="mp-project-copy"><div className="mp-project-meta"><span>{item.number}</span><p className="mp-eyebrow">{item.category}</p></div><h2>{item.title}</h2><span className="mp-text-link">VER PROJETO <Arrow /></span></div></Link>
   </article>)}</div>;
 }
 function ClosingCallout() {
@@ -48,6 +49,18 @@ export function HomePage() {
 }
 
 export function PortfolioPage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="PORTFÓLIO" title="Projetos" /><PortfolioGrid /><ClosingCallout /></section>; }
+
+export function ProjectDetailPage({ params }: { params: { slug: string } }) {
+  const { data, isLoading } = trpc.site.projects.useQuery(undefined, { retry: false, staleTime: 60_000 });
+  const records = (data ?? []).map((item, index) => ({ number: String(index + 1).padStart(2, "0"), category: item.category || "PROJETO", title: item.title, image: item.url || undefined, alt: item.title }));
+  const items = records.length ? records : portfolioItems;
+  const project = items.find((item) => slugify(item.title) === params.slug);
+  if (isLoading) return <section className="mp-section mp-inner-page"><p className="mp-eyebrow">PORTFÓLIO</p><h1>Carregando projeto…</h1></section>;
+  if (!project) return <section className="mp-section mp-inner-page mp-project-not-found"><p className="mp-eyebrow">PORTFÓLIO</p><h1>Projeto não encontrado</h1><p>Este projeto não está disponível no portfólio atual.</p><Link href="/projetos" className="mp-button">← VOLTAR AOS PROJETOS</Link></section>;
+  const digits = contactDefaults.phonePrimary.replace(/\\D/g, "");
+  const message = encodeURIComponent(`Olá! Vim pelo site da MadePrimer e gostaria de conversar sobre um projeto semelhante a: ${project.title}.`);
+  return <><section className="mp-section mp-inner-page mp-project-detail"><p className="mp-eyebrow">{project.category}</p><h1>{project.title}</h1><p className="mp-lead">Conheça os detalhes deste projeto e converse com a MadePrimer para adaptar a ideia ao seu ambiente.</p><div className="mp-project-detail-layout"><div>{project.image ? <img className="mp-project-detail-image" src={project.image} alt={project.alt || project.title} /> : <div className="mp-project-detail-placeholder"><span>Imagem do projeto ainda não cadastrada</span></div>}</div><aside className="mp-project-specs"><p className="mp-eyebrow">FICHA DO PROJETO</p><dl><div><dt>Categoria</dt><dd>{project.category}</dd></div><div><dt>Execução</dt><dd>Projeto sob medida, conforme levantamento e especificações aprovadas.</dd></div></dl><a className="mp-button" href={`https://wa.me/55${digits.startsWith("55") ? digits.slice(2) : digits}?text=${message}`} target="_blank" rel="noreferrer">SOLICITAR PROJETO SEMELHANTE <Arrow /></a><Link className="mp-text-link" href="/orcamento">PEDIR ORÇAMENTO DETALHADO <Arrow /></Link></aside></div></section><section className="mp-closing"><h2>Quer um projeto como este?</h2><p>Adaptamos o conceito ao seu espaço, estilo e necessidade.</p><Link className="mp-button" href="/orcamento">INICIAR MEU PROJETO <Arrow /></Link></section></>;
+}
 export function ResidentialPage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="RESIDENCIAL" title="Para viver bem, cada detalhe precisa fazer sentido.">{residentialDescription}</SectionIntro><PortfolioGrid filter="residential" /><Link href="/projetos" className="mp-button">VER PROJETOS RESIDENCIAIS <Arrow /></Link></section>; }
 export function CorporatePage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="CORPORATIVO" title="Ambientes também comunicam marcas.">{corporateDescription}</SectionIntro><p className="mp-tags">ÁREAS DE TRABALHO · DIVISÓRIAS RIPADAS · MARCENARIA CORPORATIVA</p><PortfolioGrid filter="corporate" /><Link href="/corporativo" className="mp-button">CONHEÇA O CORPORATIVO <Arrow /></Link></section>; }
 function PartnerApplicationForm() {
