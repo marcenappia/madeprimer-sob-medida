@@ -19,10 +19,13 @@ function PortfolioGrid({ filter = "all" }: { filter?: "all" | "residential" | "c
     temporary: !item.url,
   }));
   const sourceItems = dynamicItems.length ? dynamicItems : portfolioItems;
-  const items = sourceItems.filter((item) => filter === "all" || (filter === "corporate" ? item.category.toUpperCase().includes("CORPORATIVO") : !item.category.toUpperCase().includes("CORPORATIVO")));
+  const items = sourceItems.filter((item) => item.image && (filter === "all" || (filter === "corporate" ? item.category.toUpperCase().includes("CORPORATIVO") : !item.category.toUpperCase().includes("CORPORATIVO"))));
+  if (!items.length) return <div className="mp-portfolio-empty"><p className="mp-eyebrow">PORTFÓLIO EM ATUALIZAÇÃO</p><p>Estamos organizando os registros visuais desta categoria. Fale com a MadePrimer para conversar sobre seu ambiente.</p><Link href="/contato" className="mp-text-link">FALAR COM A MADEPRIMER <Arrow /></Link></div>;
   return <div className="mp-project-grid">{items.map((item) => <article className="mp-project-card" key={`${item.number}-${item.category}-${item.title}`}>
-    {item.image ? <img className="mp-project-image" src={item.image} alt={item.alt || item.title} loading="lazy" /> : <div className="mp-image-placeholder" role="img" aria-label={`Imagem temporária: ${item.title}`}><span>Imagem temporária</span></div>}
-    <Link href={`/projetos/${slugify(item.title)}`} className="mp-project-detail-link" aria-label={`Ver detalhes do projeto: ${item.title}`}><div className="mp-project-copy"><div className="mp-project-meta"><span>{item.number}</span><p className="mp-eyebrow">{item.category}</p></div><h2>{item.title}</h2><span className="mp-text-link">VER PROJETO <Arrow /></span></div></Link>
+    <Link href={`/projetos/${slugify(item.title)}`} className="mp-project-detail-link" aria-label={`Ver detalhes do projeto: ${item.title}`}>
+      <img className="mp-project-image" src={item.image} alt={item.alt || item.title} loading="lazy" />
+      <div className="mp-project-copy"><div className="mp-project-meta"><span>{item.number}</span><p className="mp-eyebrow">{item.category}</p></div><h2>{item.title}</h2><span className="mp-text-link">VER PROJETO <Arrow /></span></div>
+    </Link>
   </article>)}</div>;
 }
 function ClosingCallout() {
@@ -36,7 +39,7 @@ function PartnerNames() {
 
 export function HomePage() {
   return <>
-    <section className="mp-hero"><div className="mp-hero-rule" aria-hidden="true" /><div className="mp-hero-content"><p className="mp-eyebrow">MADEPRIMER · PLANEJADOS DE INTERIORES</p><h1>O toque fino da<br /><em>marcenaria premium.</em></h1><Link href="/projetos" className="mp-button">CONHEÇA NOSSOS PROJETOS <Arrow /></Link></div></section>
+    <section className="mp-hero mp-hero-editorial"><img className="mp-hero-image" src="/assets/cozinha-madeprimer.png" alt="Ambiente de cozinha com marcenaria sob medida" fetchPriority="high" /><div className="mp-hero-shade" aria-hidden="true" /><div className="mp-hero-content"><p className="mp-eyebrow">MADEPRIMER · PLANEJADOS DE INTERIORES</p><h1>Marcenaria sob medida.<br /><em>Do projeto à execução.</em></h1><p className="mp-hero-lead">Soluções para ambientes residenciais e corporativos, pensadas a partir do espaço e das necessidades de cada projeto.</p><div className="mp-hero-actions"><Link href="/projetos" className="mp-button">CONHEÇA NOSSOS PROJETOS <Arrow /></Link><Link href="/orcamento" className="mp-hero-secondary">SOLICITAR ORÇAMENTO</Link></div></div><span className="mp-hero-index">CASA · BUSINESS</span></section>
     <section className="mp-manifesto"><p className="mp-eyebrow">MANIFESTO</p><h2>O luxo está nos detalhes.</h2><p>{companyDescription}</p></section>
     <section className="mp-section" id="projetos"><div className="mp-section-heading"><div><p className="mp-eyebrow">PORTFÓLIO</p><h2>Projetos</h2></div><Link href="/projetos" className="mp-text-link">VER TODOS <Arrow /></Link></div><PortfolioGrid /></section>
     <section className="mp-feature-section mp-feature-residential"><div className="mp-feature-copy"><p className="mp-eyebrow">RESIDENCIAL</p><h2>Para viver bem, cada detalhe precisa fazer sentido.</h2><p>{residentialDescription}</p><Link href="/residencial" className="mp-text-link">VER PROJETOS RESIDENCIAIS <Arrow /></Link></div><div className="mp-feature-projects"><PortfolioGrid filter="residential" /></div></section>
@@ -53,7 +56,7 @@ export function PortfolioPage() { return <section className="mp-section mp-inner
 export function ProjectDetailPage({ params }: { params: { slug: string } }) {
   const { data, isLoading } = trpc.site.projects.useQuery(undefined, { retry: false, staleTime: 60_000 });
   const records = (data ?? []).map((item, index) => ({ number: String(index + 1).padStart(2, "0"), category: item.category || "PROJETO", title: item.title, image: item.url || undefined, alt: item.title }));
-  const items = records.length ? records : portfolioItems;
+  const items = records.filter((item) => item.image);
   const project = items.find((item) => slugify(item.title) === params.slug);
   if (isLoading) return <section className="mp-section mp-inner-page"><p className="mp-eyebrow">PORTFÓLIO</p><h1>Carregando projeto…</h1></section>;
   if (!project) return <section className="mp-section mp-inner-page mp-project-not-found"><p className="mp-eyebrow">PORTFÓLIO</p><h1>Projeto não encontrado</h1><p>Este projeto não está disponível no portfólio atual.</p><Link href="/projetos" className="mp-button">← VOLTAR AOS PROJETOS</Link></section>;
