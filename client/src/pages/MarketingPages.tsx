@@ -125,7 +125,24 @@ export function ArchitectsPage() {
     <div className="mp-value-grid">{points.map(([title, text]) => <article className="mp-value-card" key={title}><h2>{title}</h2><p>{text}</p></article>)}</div>
   </section><section className="mp-section mp-inner-page" id="parceria"><SectionIntro eyebrow="MADEPRIMER PARTNERS" title="Vamos construir uma boa parceria?" >Preencha seus dados para apresentar seu escritório e conversar com nossa equipe. Retornaremos em até 1 dia útil.</SectionIntro><PartnerApplicationForm /></section></>;
 }
-export function ProcessPage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="PROCESSO" title="Do projeto à instalação" >Etapas claras para alinhar expectativas, especificações e execução.</SectionIntro><ol className="mp-process-list">{processSteps.map((step, index) => <li key={step}><span className="mp-step-number">0{index + 1}</span><h2>{step}</h2></li>)}</ol><p className="mp-lead">Cada projeto é analisado conforme o ambiente, as medidas, os materiais especificados e as necessidades de instalação.</p><Link href="/orcamento" className="mp-button">CONVERSAR SOBRE UM PROJETO <Arrow /></Link></section>; }
+export function ProcessPage() {
+  const steps = [
+    { number: "01", title: "Projeto", description: "Briefing, levantamento e desenvolvimento do projeto sob medida." },
+    { number: "02", title: "Análise", description: "Estudo técnico, materiais e viabilidade de execução." },
+    { number: "03", title: "Orçamento", description: "Proposta detalhada, item por item, com escopo e condições alinhados antes do início." },
+    { number: "04", title: "Produção", description: "Fabricação com acompanhamento e atenção à qualidade em cada etapa." },
+    { number: "05", title: "Instalação", description: "Montagem, acabamento e entrega conforme o prazo combinado." },
+  ];
+  return <section className="mp-section mp-inner-page mp-process-page">
+    <SectionIntro eyebrow="COMO TRABALHAMOS" title="Processo">Da primeira conversa à instalação, cada etapa ajuda a alinhar expectativas, especificações e execução.</SectionIntro>
+    <div className="mp-process-detail-list">{steps.map((step) => <article className="mp-process-detail-row" key={step.number}>
+      <span className="mp-process-detail-number">{step.number}</span>
+      <h2>{step.title}</h2>
+      <p>{step.description}</p>
+    </article>)}</div>
+    <div className="mp-process-cta"><Link href="/contato" className="mp-text-link">INICIAR MEU PROJETO <Arrow /></Link></div>
+  </section>;
+}
 export function PartnersPage() { return <section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="PARCEIROS" title="Um bom projeto é feito de boas escolhas." >Trabalhamos em conjunto com profissionais e parceiros para ampliar as possibilidades de cada ambiente.</SectionIntro><PartnerNames /><p className="mp-partner-description">{partnerDescription}</p><div className="mp-info-panel"><h2>Você é arquiteto ou designer?</h2><p>Conheça o programa de parceria MadePrimer para projetos residenciais e corporativos.</p><Link href="/arquitetos" className="mp-button">CONHEÇA A PARCERIA <Arrow /></Link></div><ClosingCallout /></section>; }
 export function AboutPage() {
   const values = [
