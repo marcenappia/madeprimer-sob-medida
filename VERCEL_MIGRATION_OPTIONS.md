@@ -1,36 +1,48 @@
-# Migração completa MadePrimer para Vercel: opções e custos
+# Migração completa MadePrimer para Vercel: provedores e custos
 
-**Atualizado em 27 de outubro de 2026.** Este documento recomenda uma rota de migração, não autoriza nem executa um deployment. O domínio `madeprimer.com.br` continuará fora da configuração.
+**Atualizado em 27 de outubro de 2026.** Este comparativo não cria recursos nem autoriza deployment. O domínio `madeprimer.com.br` continua fora da configuração.
 
 ## Situação atual
 
-O aplicativo usa Express e tRPC, Drizzle com o driver MySQL (`mysql2`), Manus OAuth e o serviço de storage da Manus para gravar anexos privados. O projeto Webdev ainda funciona como runtime de referência. A cópia GitHub não está vinculada a um projeto Vercel nesta sessão: não há CLI Vercel instalado, `.vercel/project.json` nem `vercel.json`.
+O aplicativo usa Express/tRPC, Drizzle com `mysql2`, Manus OAuth e o serviço Manus para anexos privados. O entrypoint atual em `server/_core/index.ts` cria um servidor e chama `listen`, mas não exporta a aplicação como entrypoint Vercel. A entrega de assets também precisa ser adaptada: na Vercel, `express.static()` não serve os arquivos; a plataforma espera assets em `public/`. Portanto, a cópia atual do GitHub ainda não é um deployment funcional apenas por importação do repositório. [1]
 
-A Vercel aceita aplicações Express como uma Function Node.js, mas o entrypoint atual está em `server/_core/index.ts`, cria o servidor e chama `listen`; ele não exporta a aplicação como entrypoint Vercel. Além disso, assets estáticos precisam ser adaptados ao modo de entrega da Vercel: a documentação informa que `express.static()` não serve os assets da plataforma e que arquivos públicos devem estar em `public/`. Portanto, a árvore atual ainda não está pronta para um deployment funcional só por importar o repositório. [1]
+A conta Vercel não foi acessada nesta sessão e o ambiente não tem Vercel CLI nem vínculo `.vercel/project.json`; ainda não sabemos se a conta está no plano Hobby/Pro nem se há um projeto existente.
 
-## Combinação recomendada
+## Opção A — TiDB Cloud Starter + Vercel Blob privado
 
-**Banco: TiDB Cloud Starter conectado pelo Vercel Marketplace.** O TiDB é compatível com o protocolo MySQL e com recursos comuns do MySQL 5.7/8.0, o que evita começar com uma conversão completa do schema Drizzle para PostgreSQL. A compatibilidade não é total; o schema e as migrations ainda precisam ser verificados antes de mover dados. [2]
+Esta é a opção com menor mudança no código de dados porque o projeto já usa MySQL. O TiDB é compatível com o protocolo MySQL e recursos comuns do MySQL 5.7/8.0, mas não é compatível em todos os recursos; schema e migrations ainda precisam de verificação. [2]
 
-A página de preços do TiDB lista uma franquia mensal Starter de **25 GiB de dados em linha, 25 GiB colunar e 250 milhões de Request Units por organização**, para até cinco instâncias elegíveis. Acima da franquia, os valores publicados começam em **US$ 0,10 por milhão de RUs, US$ 0,20/GiB-mês de dados em linha e US$ 0,05/GiB-mês de dados colunares**; os preços variam por região e provedor de nuvem. [3] O Marketplace pode fornecer variáveis de conexão ao projeto Vercel. Para a configuração genérica, elas são `TIDB_HOST`, `TIDB_PORT`, `TIDB_USER`, `TIDB_PASSWORD` e `TIDB_DATABASE`; a aplicação precisará montar uma conexão segura compatível com `mysql2` ou usar uma `DATABASE_URL` adequada. [4]
+O preço oficial do TiDB Starter anuncia franquia mensal de **25 GiB de dados em linha, 25 GiB colunares e 250 milhões de Request Units por organização**, em até cinco instâncias elegíveis. Acima dela, as tarifas publicadas começam em **US$ 0,10 por milhão de RUs, US$ 0,20/GiB-mês em linha e US$ 0,05/GiB-mês colunar**; os valores variam por região. A integração Vercel Marketplace pode fornecer variáveis de conexão; a configuração genérica entrega `TIDB_HOST`, `TIDB_PORT`, `TIDB_USER`, `TIDB_PASSWORD` e `TIDB_DATABASE`, que precisam ser transformadas em configuração segura para `mysql2` ou em `DATABASE_URL`. [3] [4]
 
-**Anexos: Vercel Blob em modo privado.** O Blob privado é indicado para documentos sensíveis e requer autenticação para operações de leitura e escrita. Será necessário substituir a integração atual com o storage Manus por um adaptador Vercel Blob e manter a autorização administrativa antes de transmitir cada anexo. [5]
+Para anexos, Vercel Blob em modo privado evita URLs públicas. A aplicação teria de substituir o atual adaptador Manus e autorizar cada leitura. As tarifas publicadas incluem **US$ 0,023/GB-mês de armazenamento, US$ 0,40 por milhão de operações simples, US$ 5 por milhão de operações avançadas e US$ 0,05/GB de transferência**; o custo real depende de uploads e downloads. Downloads privados são transmitidos por uma Function e podem gerar custos de transferência tanto entre Blob e Function quanto entre Function e navegador. [5] [6]
 
-Como referência de preço de uso do Blob, a Vercel publica **US$ 0,023/GB-mês de armazenamento, US$ 0,40 por milhão de operações simples, US$ 5 por milhão de operações avançadas e US$ 0,05/GB de transferência de dados**, além dos limites/créditos do plano. Downloads privados passam por uma Function e podem gerar tanto custo de transferência do Blob até a Function quanto da Function ao navegador. O custo total depende do volume de anexos, leituras e transferências, ainda desconhecido. [6]
+**Estimativa-base:** TiDB pode custar **US$ 0/mês dentro da franquia**; Blob é por uso. A Vercel Pro, necessária para uso comercial, custa **US$ 20 por assento de desenvolvedor/mês** e inclui **US$ 20 de crédito de uso**, antes de tributos. Se a conta já tiver um assento Pro, o custo-base incremental pode ser menor. [7]
 
-**Plano Vercel: Pro, caso a conta atual ainda esteja no Hobby.** O Hobby é restrito a uso pessoal não comercial; o uso comercial requer Pro ou Enterprise. A tabela atual lista Pro a **US$ 20 por mês por assento de desenvolvedor**, com **US$ 20 de crédito de uso**; impostos e consumo além do crédito podem aumentar a fatura. Se a conta já tiver um assento Pro disponível, esse valor-base pode não ser incremental para este projeto, mas o estado da conta ainda não foi consultado. [7]
+## Opção B — Supabase Postgres + Supabase Storage privado
 
-## Estimativa inicial
+O Supabase oferece banco PostgreSQL e storage no mesmo provedor e tem integração pelo Vercel Marketplace, com sincronização de variáveis de ambiente e faturamento pelo Vercel. A integração está marcada pela documentação como **Public Alpha**; projetos desse caminho só podem ser criados pelo Dashboard Vercel, e o Marketplace tem limitações próprias. [8] [9]
 
-O mínimo de plataforma é **US$ 20/mês** se for necessário adicionar um assento Pro. TiDB pode ficar em **US$ 0/mês dentro da franquia Starter**. Blob e Functions dependem do uso e dos créditos disponíveis; não é possível estimar uma fatura final sem volumes de armazenamento, downloads e tráfego. Assim, a referência inicial é **US$ 20/mês, mais eventual uso acima das franquias/créditos e tributos**, se a conta Vercel não tiver Pro e se o banco ficar no Starter.
+No plano Supabase Free, a franquia publicada é **500 MB de banco, 1 GB de arquivos e 5 GB de egress**; projetos gratuitos são pausados após uma semana sem atividade. Isso serve para experimentar, não para manter uma aplicação comercial confiável. No plano Pro, a página lista **US$ 25/mês**, primeiro projeto incluído, **8 GB de banco, 100 GB de arquivos e 250 GB de egress**. O Pro inclui **US$ 10/mês em créditos de compute**, suficiente para um projeto Micro; acima das franquias, a página publica US$ 0,125/GB adicional de banco, US$ 0,0213/GB adicional de arquivos e US$ 0,09/GB adicional de egress, além das demais tarifas aplicáveis. [10]
 
-## Trabalho necessário antes de implantar
+Buckets privados do Supabase podem emitir URLs assinadas com validade limitada. A documentação alerta que URLs assinadas permanecem válidas até expirarem e não podem ser revogadas individualmente antes disso; a aplicação deve usar prazos curtos e não compartilhar esses links com usuários não autorizados. [11]
 
-Será preciso criar um entrypoint Express adequado à Vercel, distribuir os assets estáticos pelo caminho suportado, manter a navegação SPA e rotear `/api/*`, anexos e demais páginas corretamente. O código deve aceitar as variáveis TiDB, aplicar as migrations no novo banco e substituir o storage Manus pelo Blob privado. O Manus OAuth precisará aceitar o callback do domínio Vercel escolhido, e as variáveis necessárias serão configuradas de forma protegida; nenhum valor secreto deve ser copiado para o GitHub.
+Esta opção exige trocar o driver `mysql2` e converter o schema e migrations Drizzle de MySQL para PostgreSQL, além de revisar os procedimentos SQL. Ela tende a simplificar o vínculo entre banco e anexos e oferece uma franquia de arquivos maior no Pro, mas custa mais e exige mais trabalho de migração que TiDB + Blob.
 
-Não migrei nem consultei registros de orçamento nesta etapa. Antes de copiar dados existentes, será necessário confirmar quais tabelas e anexos devem ser levados ao novo banco. O conteúdo literal de sete rotas institucionais Base44 ainda está pendente no `TODO.md`, e a política de privacidade está marcada como rascunho para revisão jurídica; esses itens devem ser resolvidos antes de expor uma primeira versão pública.
+**Estimativa-base:** Supabase Pro **US$ 25/mês** + Vercel Pro **US$ 20 por assento/mês**, se nenhum desses planos já estiver ativo ou disponível. Projeção inicial conjunta: **US$ 45/mês antes de impostos e uso excedente**; o crédito de compute de US$ 10 do Supabase cobre um Micro, conforme a calculadora oficial. [7] [10]
 
-A implantação está suspensa até uma nova confirmação explícita. Se o projeto Vercel ainda não tiver nenhum deployment, a documentação informa que o primeiro deployment é tratado como Production mesmo quando se seleciona o alvo Preview. A Vercel gera um endereço de deployment; não vou associar `madeprimer.com.br` nem iniciar um deployment nesta fase. [8]
+## Comparação e decisão pendente
+
+Se a prioridade for reaproveitar o código MySQL e começar com menor custo-base, TiDB Starter + Blob é a opção mais simples, sujeita a validar a compatibilidade do schema e aos custos variáveis de Blob. Se a prioridade for concentrar Postgres e arquivos num único serviço, e aceitar migrar o schema, Supabase Pro + Storage oferece franquias previsíveis maiores para arquivos, com estimativa-base mais alta. Nenhuma opção foi provisionada ou escolhida ainda.
+
+Em ambas, Vercel Pro/Enterprise é necessário para o uso comercial deste site; o plano Hobby é restrito a uso pessoal não comercial. [7] Não é possível projetar custos de Blob, egress ou compute sem volume mensal de anexos e leituras.
+
+## Trabalho e limites antes de publicar
+
+Qualquer escolha exigirá um entrypoint Express compatível com Vercel, entrega de assets estáticos e rotas SPA/API, banco/armazenamento externos, migrações e configuração protegida das variáveis. Manus OAuth e a allowlist de e-mails continuam como requisito, mas será necessário garantir que o callback do domínio Vercel escolhido esteja autorizado. Nenhum segredo será colocado no GitHub.
+
+Não consultei nem copiei registros de orçamento ou anexos existentes. A migração de dados requer definir quais tabelas e arquivos serão transferidos. O `TODO.md` ainda marca sete rotas institucionais sem transcrição literal, e a política de privacidade está identificada como rascunho para revisão jurídica; isso precisa ser resolvido antes de expor uma versão pública.
+
+A publicação está suspensa até uma nova confirmação explícita. Se o projeto Vercel ainda não tiver deployments, a documentação informa que o primeiro é tratado como Production mesmo quando se seleciona o alvo Preview. Não criarei projeto, banco, storage, deployment ou associação com `madeprimer.com.br` nesta etapa. [12]
 
 ## Fontes oficiais
 
@@ -41,4 +53,8 @@ A implantação está suspensa até uma nova confirmação explícita. Se o proj
 [5]: https://vercel.com/changelog/private-storage-for-vercel-blob-now-available-in-public-beta "Private Vercel Blob storage"
 [6]: https://vercel.com/docs/vercel-blob/usage-and-pricing "Vercel Blob pricing"
 [7]: https://vercel.com/pricing "Vercel pricing"
-[8]: https://vercel.com/docs/deployments/environments "Vercel deployment environments"
+[8]: https://vercel.com/marketplace/supabase "Supabase on Vercel Marketplace"
+[9]: https://supabase.com/docs/guides/integrations/vercel-marketplace "Supabase Vercel Marketplace integration"
+[10]: https://supabase.com/pricing "Supabase pricing"
+[11]: https://supabase.com/docs/guides/storage/serving/downloads "Supabase private Storage downloads"
+[12]: https://vercel.com/docs/deployments/environments "Vercel deployment environments"
