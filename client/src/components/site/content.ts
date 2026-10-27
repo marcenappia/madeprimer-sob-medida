@@ -31,10 +31,7 @@ export type PortfolioItem = {
 
 export const portfolioItems: PortfolioItem[] = [
   { number: "01", category: "COZINHA", title: "Cozinha com armários amadeirados", image: "/assets/cozinha-madeprimer.png", alt: "Cozinha com armários amadeirados", temporary: false },
-  { number: "02", category: "LIVING", title: "Sala com estante e cristaleira", temporary: true },
-  { number: "03", category: "DORMITÓRIO", title: "Dormitório com bancada e espelho", temporary: true },
-  { number: "04", category: "BUSINESS · CORPORATIVO", title: "Divisórias e marcenaria corporativa", temporary: true },
-  { number: "05", category: "PROJETOS ESPECIAIS", title: "Bancadas sob medida", temporary: true },
+  // Novos itens entram no portfólio público apenas quando houver imagem e registro real aprovados.
 ];
 
 export const heroEyebrow = "MADEPRIMER · PLANEJADOS DE INTERIORES";
