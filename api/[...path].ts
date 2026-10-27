@@ -1,6 +1,5 @@
-import { createApiApp } from "../server/_core/app";
+import app from "../server/_core/app.bundle.js";
 
-// Vercel invokes this Express-compatible handler for /api/* requests.
-// No listener is opened in the serverless function.
-const app = createApiApp();
+// Build step bundles the shared Express application so Node ESM can resolve
+// the server's internal imports consistently inside Vercel's function runtime.
 export default app;
