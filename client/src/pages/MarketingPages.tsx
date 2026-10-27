@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { companyDescription, contactDefaults, corporateDescription, partnerDescription, portfolioItems, processSteps, residentialDescription, type PortfolioItem } from "../components/site/content";
@@ -50,16 +50,109 @@ export function HomePage() {
 export function PortfolioPage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="PORTFÓLIO" title="Projetos" /><PortfolioGrid /><ClosingCallout /></section>; }
 export function ResidentialPage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="RESIDENCIAL" title="Para viver bem, cada detalhe precisa fazer sentido.">{residentialDescription}</SectionIntro><PortfolioGrid filter="residential" /><Link href="/projetos" className="mp-button">VER PROJETOS RESIDENCIAIS <Arrow /></Link></section>; }
 export function CorporatePage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="CORPORATIVO" title="Ambientes também comunicam marcas.">{corporateDescription}</SectionIntro><p className="mp-tags">ÁREAS DE TRABALHO · DIVISÓRIAS RIPADAS · MARCENARIA CORPORATIVA</p><PortfolioGrid filter="corporate" /><Link href="/corporativo" className="mp-button">CONHEÇA O CORPORATIVO <Arrow /></Link></section>; }
-export function ArchitectsPage() { return <section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="PARA ARQUITETOS E DESIGNERS" title={<>Você projeta.<br /><em>A MadePrimer executa.</em></>} >Uma parceria para transformar projetos de interiores em marcenaria sob medida, alinhando especificações, medidas, materiais e detalhes de execução.</SectionIntro><p className="mp-lead">Compartilhe desenhos, medidas, materiais especificados e o cronograma desejado para avaliarmos a viabilidade e os próximos passos.</p><Link href="/contato" className="mp-button">CONVERSAR SOBRE UMA PARCERIA <Arrow /></Link></section>; }
-export function ProcessPage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="PROCESSO" title="Do primeiro alinhamento à instalação.">Um processo claro ajuda a alinhar expectativas, especificações e etapas de execução. O fluxo é ajustado conforme a complexidade e o escopo de cada projeto.</SectionIntro><ol className="mp-process-list">{processSteps.map((step, index) => <li key={step}><span className="mp-step-number">0{index + 1}</span><h2>{step}</h2></li>)}</ol><p className="mp-lead">As etapas, os materiais e os prazos são confirmados em cada proposta, de acordo com as características do projeto.</p><Link href="/orcamento" className="mp-button">SOLICITAR ORÇAMENTO <Arrow /></Link></section>; }
-export function PartnersPage() { return <section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="PARCEIROS" title="Um bom projeto é feito de boas escolhas." /><PartnerNames /><p className="mp-partner-description">{partnerDescription}</p><Link href="/parceiros" className="mp-text-link">NOSSOS PARCEIROS <Arrow /></Link><ClosingCallout /></section>; }
-export function AboutPage() { return <section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="SOBRE A MADEPRIMER" title="Marcenaria sob medida, com atenção ao projeto e ao espaço.">{companyDescription}</SectionIntro><p className="mp-lead">Atendemos projetos residenciais e corporativos na Grande São Paulo e região. Nossa proposta é compreender as necessidades de cada ambiente e avaliar soluções alinhadas às especificações e ao uso previsto.</p><ClosingCallout /></section>; }
+function PartnerApplicationForm() {
+  const [notice, setNotice] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+  const submitQuote = trpc.site.submitQuote.useMutation({
+    onSuccess: () => {
+      setNotice("Recebemos sua solicitação. Nossa equipe entrará em contato em até 1 dia útil.");
+      setError("");
+      setPending(false);
+      const form = document.getElementById("partner-application") as HTMLFormElement | null;
+      form?.reset();
+    },
+    onError: (err) => {
+      setError(err.message || "Não foi possível enviar agora. Tente novamente ou fale conosco pelo WhatsApp.");
+      setPending(false);
+    },
+  });
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    setNotice("");
+    setError("");
+    setPending(true);
+    submitQuote.mutate({
+      projectType: "Parceria com arquiteto ou designer",
+      objective: String(data.get("office") || "Cadastro de parceiro"),
+      city: String(data.get("city") || ""),
+      measurements: "",
+      desiredTimeline: "",
+      budgetRange: "",
+      message: [
+        "Solicitação de parceria MadePrimer",
+        "Escritório: " + String(data.get("office") || "Não informado"),
+        "Instagram/site: " + String(data.get("website") || "Não informado"),
+        "Área de atuação: " + String(data.get("area") || "Não informado"),
+        "Mensagem: " + String(data.get("message") || "Não informada"),
+      ].join("\\n"),
+      fullName: String(data.get("name") || ""),
+      phone: String(data.get("phone") || ""),
+      email: String(data.get("email") || ""),
+      privacyAccepted: data.get("privacy") === "on",
+      attachmentCount: 0,
+    });
+  }
+  return <form id="partner-application" onSubmit={submit} className="mp-form">
+    <div className="mp-form-grid">
+      <label>Nome completo<input name="name" autoComplete="name" required minLength={2} /></label>
+      <label>Escritório / empresa<input name="office" autoComplete="organization" required minLength={2} /></label>
+      <label>E-mail profissional<input name="email" type="email" autoComplete="email" required /></label>
+      <label>WhatsApp<input name="phone" type="tel" autoComplete="tel" required minLength={8} placeholder="(11) 99999-9999" /></label>
+      <label>Cidade e região atendida<input name="city" autoComplete="address-level2" required minLength={2} /></label>
+      <label>Site ou Instagram<input name="website" type="text" placeholder="@seuescritorio ou site.com.br" /></label>
+      <label>Área de atuação<select name="area" defaultValue="Residencial"><option>Residencial</option><option>Corporativo</option><option>Residencial e corporativo</option></select></label>
+      <label className="mp-form-wide">Conte um pouco sobre os projetos e a parceria desejada<textarea name="message" rows={4} /></label>
+    </div>
+    <label className="mp-consent"><input name="privacy" type="checkbox" required /> Li e concordo com a política de privacidade e autorizo o contato sobre esta solicitação.</label>
+    {error && <p className="mp-form-error" role="alert">{error}</p>}
+    {notice && <p className="mp-form-success" role="status">{notice}</p>}
+    <button className="mp-button" type="submit" disabled={pending}>{pending ? "ENVIANDO…" : "ENVIAR CADASTRO"} <Arrow /></button>
+    <p className="mp-form-note">Se preferir, fale diretamente com a equipe pelo WhatsApp na página de contato.</p>
+  </form>;
+}
+
+export function ArchitectsPage() {
+  const points = [
+    ["Fidelidade ao projeto", "Respeitamos conceito, medidas, materiais e linguagem. O que foi definido é a referência para a execução."],
+    ["Precisão na execução", "Do projeto executivo à instalação, com acompanhamento das etapas de produção e montagem."],
+    ["Parceria", "Uma relação pensada para projetos atuais e futuros, com comunicação direta e alinhamento de expectativas."],
+  ];
+  return <><section className="mp-section mp-inner-page mp-editorial-page">
+    <SectionIntro eyebrow="PARA ARQUITETOS E DESIGNERS" title={<>Você cria o projeto.<br /><em>A MadePrimer ajuda a fazê-lo acontecer.</em></>} >Você projeta. A MadePrimer executa. Uma parceria para transformar especificações em ambientes sob medida.</SectionIntro>
+    <div className="mp-value-grid">{points.map(([title, text]) => <article className="mp-value-card" key={title}><h2>{title}</h2><p>{text}</p></article>)}</div>
+  </section><section className="mp-section mp-inner-page" id="parceria"><SectionIntro eyebrow="MADEPRIMER PARTNERS" title="Vamos construir uma boa parceria?" >Preencha seus dados para apresentar seu escritório e conversar com nossa equipe. Retornaremos em até 1 dia útil.</SectionIntro><PartnerApplicationForm /></section></>;
+}
+export function ProcessPage() { return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="PROCESSO" title="Do projeto à instalação" >Etapas claras para alinhar expectativas, especificações e execução.</SectionIntro><ol className="mp-process-list">{processSteps.map((step, index) => <li key={step}><span className="mp-step-number">0{index + 1}</span><h2>{step}</h2></li>)}</ol><p className="mp-lead">Cada projeto é analisado conforme o ambiente, as medidas, os materiais especificados e as necessidades de instalação.</p><Link href="/orcamento" className="mp-button">CONVERSAR SOBRE UM PROJETO <Arrow /></Link></section>; }
+export function PartnersPage() { return <section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="PARCEIROS" title="Um bom projeto é feito de boas escolhas." >Trabalhamos em conjunto com profissionais e parceiros para ampliar as possibilidades de cada ambiente.</SectionIntro><PartnerNames /><p className="mp-partner-description">{partnerDescription}</p><div className="mp-info-panel"><h2>Você é arquiteto ou designer?</h2><p>Conheça o programa de parceria MadePrimer para projetos residenciais e corporativos.</p><Link href="/arquitetos" className="mp-button">CONHEÇA A PARCERIA <Arrow /></Link></div><ClosingCallout /></section>; }
+export function AboutPage() {
+  const values = [
+    ["Fidelidade ao projeto", "Respeito às especificações, às medidas e à intenção de cada ambiente."],
+    ["Compromisso com prazos", "Alinhamento de etapas e comunicação durante a execução."],
+    ["Personalização", "Soluções sob medida para a rotina e a identidade de cada cliente."],
+    ["Transparência", "Informações claras e diálogo do primeiro contato à instalação."],
+    ["Profissionais especializados", "Atenção à técnica, aos materiais e aos detalhes de acabamento."],
+    ["Soluções funcionais", "Escolhas que conciliam estética, uso e características do espaço."],
+  ];
+  return <><section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="SOBRE A MADEPRIMER" title="Marcenaria sob medida. Do projeto à execução." >Criamos e executamos marcenaria para ambientes residenciais e corporativos, respeitando a identidade de cada espaço e as necessidades de quem vai utilizá-lo.</SectionIntro><p className="mp-lead">{companyDescription}</p></section><section className="mp-section mp-about-mission"><div><p className="mp-eyebrow">MISSÃO</p><h2>Transformar projetos em ambientes que fazem sentido.</h2><p>Unir planejamento, materiais e execução para criar marcenaria sob medida que responda às necessidades reais de cada cliente.</p></div><div><p className="mp-eyebrow">VISÃO</p><h2>Ser uma parceira confiável em cada etapa.</h2><p>Construir relações duradouras com clientes, arquitetos e designers, com comunicação clara e atenção aos detalhes.</p></div></section><section className="mp-section"><SectionIntro eyebrow="NOSSOS PRINCÍPIOS" title="Valores que orientam o trabalho" /><div className="mp-value-grid">{values.map(([title,text])=><article className="mp-value-card" key={title}><h2>{title}</h2><p>{text}</p></article>)}</div></section><ClosingCallout /></>;
+}
 export function ContactPage() {
   const { data } = trpc.site.publicSettings.useQuery(undefined, { retry: false, staleTime: 60_000 });
   const phone = data?.phonePrimary || contactDefaults.phonePrimary;
   const secondary = data?.phoneSecondary || contactDefaults.phoneSecondary;
-  const digits = phone.replace(/\D/g, "");
-  return <section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="CONTATO" title="Vamos conversar sobre seu próximo projeto?" /><div className="mp-contact-details"><a href={`https://wa.me/${digits.startsWith("55") ? digits : `55${digits}`}`}>{phone}</a><a href={`tel:${secondary.replace(/[^+\d]/g, "")}`}>{secondary}</a><address>{data?.address || contactDefaults.address}<br />Jandira — SP</address></div><Link href="/orcamento" className="mp-button">SOLICITAR ORÇAMENTO <Arrow /></Link></section>;
+  const digits = phone.replace(/\\D/g, "");
+  const whatsapp = `https://wa.me/${digits.startsWith("55") ? digits : `55${digits}`}`;
+  const socials = [
+    ["Instagram", data?.instagram],
+    ["Facebook", data?.facebook],
+    ["LinkedIn", data?.linkedin],
+    ["YouTube", data?.youtube],
+    ["Pinterest", data?.pinterest],
+  ].filter((item): item is [string, string] => Boolean(item[1]));
+  return <section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="CONTATO" title="Vamos conversar sobre seu próximo projeto?" >Conte sobre seu ambiente, suas ideias ou a parceria que deseja construir com a MadePrimer.</SectionIntro><div className="mp-contact-details"><div><p className="mp-eyebrow">WHATSAPP</p><a href={whatsapp} target="_blank" rel="noreferrer">{phone}</a></div><div><p className="mp-eyebrow">TELEFONE</p><a href={`tel:${secondary.replace(/[^+\\d]/g, "")}`}>{secondary}</a></div>{data?.email && <div><p className="mp-eyebrow">E-MAIL</p><a href={`mailto:${data.email}`}>{data.email}</a></div>}<div><p className="mp-eyebrow">ENDEREÇO</p><address>{data?.address || contactDefaults.address}<br />{data?.city || "Jandira"}{data?.state ? ` — ${data.state}` : " — SP"}</address></div><div><p className="mp-eyebrow">ÁREA DE ATENDIMENTO</p><p>{data?.serviceArea || "Grande São Paulo e região"}</p></div></div>{socials.length > 0 && <div className="mp-social-links">{socials.map(([label,url])=><a key={label} href={url} target="_blank" rel="noreferrer">{label} <Arrow /></a>)}</div>}<div className="mp-info-panel"><h2>Já tem as informações do projeto?</h2><p>Envie os dados para análise e solicite um orçamento.</p><Link href="/orcamento" className="mp-button">SOLICITAR ORÇAMENTO <Arrow /></Link></div></section>;
 }
+export function PrivacyPage() { return <section className="mp-section mp-inner-page mp-privacy"><SectionIntro eyebrow="INFORMAÇÕES LEGAIS" title="Política de privacidade" >Como tratamos as informações enviadas pelos formulários da MadePrimer.</SectionIntro><p className="mp-review-note">Documento informativo sujeito à revisão jurídica e à confirmação dos procedimentos reais de tratamento de dados antes da publicação.</p><h2>1. Dados que podem ser coletados</h2><p>Ao preencher formulários, você poderá fornecer nome, telefone, e-mail, cidade, informações sobre o ambiente e o projeto, preferências, prazo e outros detalhes necessários para o atendimento. Se o formulário permitir anexos, estes também poderão conter informações pessoais.</p><h2>2. Finalidade de uso</h2><p>As informações são utilizadas para responder ao contato, analisar solicitações, preparar propostas e acompanhar a comunicação relacionada ao projeto ou à parceria.</p><h2>3. Compartilhamento e armazenamento</h2><p>O acesso deve ser limitado às pessoas autorizadas que precisam dessas informações para atender à solicitação. Os serviços técnicos que armazenam ou processam os dados devem ser confirmados pela empresa, assim como seus prazos de retenção e medidas de segurança.</p><h2>4. Seus direitos</h2><p>Nos termos da legislação aplicável, incluindo a LGPD, você pode solicitar informações sobre o tratamento de seus dados, correção e, quando aplicável, exclusão ou outras providências previstas em lei.</p><h2>5. Contato</h2><p>Para solicitações relacionadas à privacidade, entre em contato pelos canais oficiais da MadePrimer. Antes da publicação definitiva, a empresa deve indicar um canal responsável e confirmar os procedimentos para atendimento dos titulares.</p><p className="mp-review-note">Última revisão editorial: outubro de 2026.</p></section>; }
 export function MyAccountPage() { return <section className="mp-section mp-inner-page mp-editorial-page"><SectionIntro eyebrow="MINHA CONTA" title="MINHA CONTA" /><div className="mp-info-panel"><p>O acesso à conta de cliente não está habilitado nesta versão.</p><Link href="/orcamento" className="mp-text-link">SOLICITAR ORÇAMENTO <Arrow /></Link></div></section>; }
 export function PrivacyPage() { return <section className="mp-section mp-inner-page mp-privacy"><SectionIntro eyebrow="INFORMAÇÕES" title="Política de privacidade" /><p className="mp-review-note">Rascunho para revisão jurídica antes da publicação.</p><h2>Dados enviados pelo formulário</h2><p>Ao solicitar um orçamento, você pode informar nome, telefone, e-mail, cidade, ambiente, objetivo, medidas aproximadas, prazo, faixa de investimento e anexar imagens ou PDFs de referência. O aceite da política é solicitado antes do envio.</p><h2>Uso e armazenamento</h2><p>Essas informações são armazenadas no banco de dados do site MadePrimer e são usadas para receber, analisar e acompanhar a solicitação. Os anexos são armazenados em área privada e podem ser acessados somente por administradores autorizados da MadePrimer. Nesta versão não há envio da solicitação para CRM, e-mail de terceiros, campanhas de publicidade ou serviços de inteligência artificial.</p><h2>Contato e revisão</h2><p>Para falar sobre uma solicitação, use os contatos publicados nesta página. Os prazos de retenção, procedimentos de exclusão e demais informações legais devem ser revisados e complementados pela MadePrimer antes de qualquer publicação oficial.</p><p className="mp-privacy-contact">(11) 97975-6780 · (11) 98865-3576</p></section>; }
