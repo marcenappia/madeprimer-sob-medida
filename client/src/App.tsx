@@ -17,6 +17,7 @@ import {
   PortfolioPage,
   PrivacyPage,
   ProcessPage,
+  ProjectDetailPage,
   ResidentialPage,
 } from "./pages/MarketingPages";
 import QuotePage from "./pages/Quote";
@@ -30,6 +31,7 @@ function Router() {
   return <Switch>
     <Route path="/" component={Home} />
     <Route path="/projetos" component={() => <PublicRoute><PortfolioPage /></PublicRoute>} />
+    <Route path="/projetos/:slug" component={() => <PublicRoute><ProjectDetailPage /></PublicRoute>} />
     <Route path="/portfolio" component={() => <PublicRoute><PortfolioPage /></PublicRoute>} />
     <Route path="/residencial" component={() => <PublicRoute><ResidentialPage /></PublicRoute>} />
     <Route path="/ambientes-residenciais" component={() => <PublicRoute><ResidentialPage /></PublicRoute>} />
@@ -45,6 +47,7 @@ function Router() {
     <Route path="/meus-orcamentos" component={() => <PublicRoute><MyAccountPage /></PublicRoute>} />
     <Route path="/minha-conta" component={() => <PublicRoute><MyAccountPage /></PublicRoute>} />
     <Route path="/orcamento" component={() => <PublicRoute><QuotePage /></PublicRoute>} />
+    <Route path="/politica-de-privacidade" component={() => <PublicRoute><PrivacyPage /></PublicRoute>} />
     <Route path="/privacidade" component={() => <PublicRoute><PrivacyPage /></PublicRoute>} />
     <Route path="/admin" component={AdminPage} />
     <Route path="/admin/:section" component={AdminModulePage} />

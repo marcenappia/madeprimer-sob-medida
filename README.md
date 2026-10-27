@@ -8,7 +8,7 @@ O repositório GitHub usado para versionamento é `marcenappia/madeprimer-sob-me
 
 A implementação preserva o conteúdo editorial Base44 e suas seções: Projetos, Residencial, Corporativo, Arquitetos, Processo, Parceiros, Sobre, Contato, Minha conta e Solicitar orçamento. O formulário registra pedidos em três etapas: ambiente/objetivo/cidade; medidas, prazo, faixa de investimento e anexos opcionais; nome, telefone, e-mail, aceite de privacidade e revisão.
 
-O conteúdo público de projetos e parceiros é exibido a partir de registros publicados/ativos quando existirem. Não há semeadura de clientes, orçamentos, depoimentos, estoque, receita, estatísticas ou obras fictícias. A fotografia de cozinha usada no portfólio já está publicada no site MadePrimer; cartões sem fotografia fornecida ficam identificados como “Imagem temporária”.
+O catálogo público inclui as nove galerias e rotas de detalhe da Base44. As 54 entradas originais são servidas localmente, associadas ao projeto correto: 53 são fotografias; a outra é o ícone genérico de imagem quebrada que a própria Base44 fornece para “Ambiente integrado com painel ripado” e aparece na interface como “Imagem indisponível na referência Base44”, nunca como fotografia. Não há semeadura de clientes, orçamentos, depoimentos, estoque, receita, estatísticas ou obras fictícias. Um projeto personalizado criado no painel que ainda não tenha foto mostra “Imagem temporária”. A antiga foto do WordPress foi removida. Consulte [`ASSET_SOURCES.md`](./ASSET_SOURCES.md) e [`BASE44_REFERENCE.md`](./BASE44_REFERENCE.md) para o mapeamento e a transcrição da fonte.
 
 ## Painel administrativo
 
@@ -63,6 +63,6 @@ Os diretórios e arquivos legados `src/`, `public/` e `index.html` na raiz são 
 - `server/access.ts`, `server/data.ts`, `server/quotes-http.ts`: allowlist, persistência e anexos privados.
 - `drizzle/`: schema e migrações do banco.
 - `shared/`: contratos de tipos e constantes usados no servidor e cliente.
-- `plan.md`, `TODO.md`, `ASSET_SOURCES.md`: escopo aprovado, andamento e proveniência visual.
+- `plan.md`, `TODO.md`, `ASSET_SOURCES.md`, `BASE44_REFERENCE.md`: escopo aprovado, andamento, proveniência de imagens e textos/rotas de referência.
 
 A cópia de privacidade do formulário é um rascunho operacional que explica armazenamento e uso dos dados; exige revisão jurídica pela MadePrimer antes de qualquer publicação oficial. Para limites e critérios detalhados, consulte `plan.md` e `TODO.md`.

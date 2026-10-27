@@ -9,6 +9,15 @@ function phoneDigits(value: string) {
   return digits;
 }
 
+function PartnerStrip() {
+  const partners = trpc.site.partners.useQuery(undefined, { retry: false, staleTime: 60_000 });
+  const names = partners.data?.length ? partners.data.map((partner) => partner.title) : ["EMBRACON CONSÓRCIOS", "LEME"];
+  return <section className="mp-partner-strip" aria-label="Parceiros MadePrimer">
+    <p className="mp-eyebrow">PARCEIROS</p>
+    <div className="mp-partner-strip-track">{Array.from({ length: 6 }, (_, cycle) => <div className="mp-partner-strip-pair" key={cycle} aria-hidden={cycle > 0 ? true : undefined}>{names.map((name, index) => <span key={`${name}-${index}`}>{name}</span>)}</div>)}</div>
+  </section>;
+}
+
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const settings = trpc.site.publicSettings.useQuery(undefined, { retry: false, staleTime: 60_000 });
@@ -29,6 +38,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       </div>
     </header>
     <main id="conteudo" className="mp-main">{children}</main>
+    <PartnerStrip />
     <footer className="mp-footer">
       <div className="mp-footer-grid">
         <section className="mp-footer-about">
@@ -38,7 +48,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         </section>
         <section><h2>NAVEGAÇÃO</h2><ul className="mp-footer-list">{footerNavigation.map((item) => <li key={item.href}><Link href={item.href}>{item.label}</Link></li>)}</ul></section>
         <section><h2>CONTATO</h2><address className="mp-contact-list"><a href={`https://wa.me/${phoneDigits(primaryPhone)}`}>{primaryPhone}</a><a href={`tel:+${phoneDigits(secondaryPhone)}`}>{secondaryPhone}</a><span>{address}</span><span>{contactDefaults.city}</span></address></section>
-        <section><h2>REDES</h2><ul className="mp-footer-list mp-social-list">{socialLinks.map((social) => <li key={social.label}>{social.href ? <a href={social.href} target="_blank" rel="noreferrer">{social.label}</a> : <span>{social.label}</span>}</li>)}</ul></section>
+        <section><h2>REDES</h2><ul className="mp-footer-list mp-social-list">{socialLinks.map((social) => <li key={social.label}><a href={social.href} target="_blank" rel="noreferrer">{social.label}</a></li>)}</ul></section>
       </div>
       <div className="mp-footer-bottom"><span>© 2026 MadePrimer Móveis sob medida. Todos os direitos reservados.</span><Link href="/privacidade">Política de privacidade</Link><Link href="/admin">Painel administrativo</Link></div>
     </footer>
