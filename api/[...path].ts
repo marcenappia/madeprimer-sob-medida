@@ -1,7 +1,6 @@
-import { createApiApp } from "../server/_core/app.js";
+import { createApiApp } from "../dist/api-app.js";
 
-// Vercel invokes the exported Express app as a serverless request handler.
-// Explicit .js is required for Node ESM resolution in the deployed function.
-// Vite's SPA rewrite excludes /api, so API requests reach this handler.
+// Load the pre-bundled Express API so path aliases and local TypeScript modules
+// are resolved at build time, not by the Vercel Node runtime.
 const app = createApiApp();
 export default app;
