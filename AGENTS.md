@@ -19,3 +19,4 @@
 - O servidor Express/tRPC e o callback/sessão Manus OAuth ficam em `server/`; os tipos compartilhados ficam em `shared/`; o banco MySQL e as migrações aditivas ficam em `drizzle/`. As APIs administrativas devem exigir sessão e allowlist validada no servidor; `MADEPRIMER_ADMIN_EMAILS` vazio ou ausente deve negar acesso.
 - Não inserir registros de demonstração nem testar criando orçamentos no banco compartilhado. Os módulos de Atendimento IA permanecem inativos sem autorização futura e não devem chamar modelos. Qualquer futura visualização por IA autorizada deve mostrar exatamente: “Visualização conceitual — não é projeto executivo.”
 - Commit normal em `main` pode sincronizar o editor Lovable; não force-push, não publique no domínio oficial sem autorização explícita e não inclua credenciais, dados pessoais ou a allowlist no Git.
+- The Express server reads `--port <n>` before `PORT`/3000, and `build:dev` runs a static Vite build; the Lovable preview depends on both.
