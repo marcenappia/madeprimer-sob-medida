@@ -169,7 +169,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .mp-form-page { min-height: 65vh; max-width: 1120px; margin: 0 auto; padding: 170px clamp(22px, 7vw, 112px) 110px; }
 .mp-form-card { padding: clamp(20px, 4vw, 52px); border: 1px solid var(--mp-line); background: rgba(9, 22, 27, .52); }
 .mp-form-progress { display: flex; align-items: center; gap: 9px; margin-bottom: 34px; }
-.mp-form-progress span { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--mp-line); border-radius: 50%; color: #aaa99d; font-size: 12px; }
+.mp-form-progress span:not(.mp-field-hint) { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--mp-line); border-radius: 50%; color: #aaa99d; font-size: 12px; }
 .mp-form-progress span.is-active, .mp-form-progress span.is-done { border-color: var(--mp-olive-light); color: var(--mp-ink-deep); background: var(--mp-olive-light); }
 .mp-form-progress i { width: 44px; height: 1px; background: var(--mp-line); }
 .mp-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px; }
