@@ -97,6 +97,15 @@ function vitePluginManusDebugCollector(): Plugin {
     },
 
     configureServer(server: ViteDevServer) {
+      // Outside Manus the collector script does not exist; serve an empty script
+      // instead of the HTML fallback, which caused "Unexpected token '<'".
+      server.middlewares.use("/__manus__/debug-collector.js", (req, res, next) => {
+        if (req.method !== "GET" && req.method !== "HEAD") return next();
+        res.setHeader("Content-Type", "application/javascript");
+        res.setHeader("Cache-Control", "no-store");
+        res.end("/* debug collector unavailable in this environment */");
+      });
+
       // POST /__manus__/logs: Browser sends logs (written directly to files)
       server.middlewares.use("/__manus__/logs", (req, res, next) => {
         if (req.method !== "POST") {
