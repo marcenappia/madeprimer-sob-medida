@@ -37,14 +37,17 @@ function SectionIntro({ eyebrow, title, children }: { eyebrow?: string; title: R
 
 function GalleryImage({ image, className = "mp-project-image", loading = "lazy" }: { image: ProjectImage; className?: string; loading?: "lazy" | "eager" }) {
   if (image.unavailable) {
-    return <div className={`${className} mp-image-unavailable`} role="img" aria-label="Imagem indisponível na referência Base44"><span>Imagem indisponível na referência Base44</span></div>;
+    return <div className={`${className} mp-image-unavailable`} role="img" aria-label="Imagem indisponível"><span>Imagem indisponível</span></div>;
   }
   return <img className={className} src={image.src} alt={image.alt} loading={loading} decoding="async" />;
 }
 
+// Open galleries on the first real photo instead of a missing-image placeholder.
+const firstAvailableIndex = (images: ProjectImage[]) => Math.max(0, images.findIndex((image) => !image.unavailable));
+
 function ProjectCard({ item, number }: { item: PortfolioItem; number?: string }) {
-  const [activeIndex, setActiveIndex] = useState(0);
   const images = item.images;
+  const [activeIndex, setActiveIndex] = useState(() => firstAvailableIndex(images));
   const selected = images[activeIndex % Math.max(images.length, 1)];
   const displayNumber = number ?? item.number ?? "";
   const move = (direction: -1 | 1) => setActiveIndex((current) => (current + direction + images.length) % images.length);
@@ -160,7 +163,7 @@ export function ProjectDetailPage() {
   const primaryPhone = settings.data?.phonePrimary || contactDefaults.phonePrimary;
   const whatsappNumber = primaryPhone.replace(/\D/g, "").replace(/^55/, "");
   const project = base44Projects.find((item) => item.slug === params.slug);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(() => (project ? firstAvailableIndex(project.images) : 0));
   if (!project) return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="PORTFÓLIO" title="Projeto não encontrado" /><Link className="mp-button" href="/projetos">VOLTAR A PROJETOS <Arrow /></Link></section>;
   const image = project.images[activeIndex % project.images.length];
   const move = (direction: -1 | 1) => setActiveIndex((current) => (current + direction + project.images.length) % project.images.length);
