@@ -91,7 +91,7 @@ export const base44Projects: Base44Project[] = [
     category: "Salas e Painéis de TV",
     filter: "SALAS",
     description: "Ambiente integrado com sala planejada, painel ripado e cruz. A galeria também apresenta a cozinha, os armários e a área de convivência do projeto.",
-    images: gallery("integrated", "Ambiente integrado com painel ripado", 25, "jpg", true),
+    images: gallery("integrated", "Ambiente integrado com painel ripado", 25, "jpg", true).filter((image) => !image.unavailable),
   },
   {
     slug: "area-gourmet-forno-tijolos",
@@ -138,7 +138,7 @@ export const portfolioItems: PortfolioItem[] = [
 export const projectGroups = [
   { id: "COZINHAS", title: "COZINHAS PLANEJADAS", sourceCount: "5 fotos · 2 projetos" },
   { id: "DORMITÓRIOS", title: "CLOSETS E DORMITÓRIOS", sourceCount: "3 fotos · 1 projeto" },
-  { id: "SALAS", title: "SALAS E PAINÉIS DE TV", sourceCount: "32 fotos · 2 projetos" },
+  { id: "SALAS", title: "SALAS E PAINÉIS DE TV", sourceCount: "31 fotos · 2 projetos" },
   { id: "GOURMET", title: "ESPAÇOS GOURMET", sourceCount: "1 foto · 1 projeto" },
   { id: "BANHEIROS", title: "BANHEIROS", sourceCount: "4 fotos · 1 projeto" },
   { id: "CORPORATIVO", title: "CORPORATIVO", sourceCount: "3 fotos · 1 projeto" },
