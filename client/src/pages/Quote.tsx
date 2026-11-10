@@ -132,7 +132,7 @@ export default function QuotePage() {
             <div className="mp-review-row full"><strong>Anexos selecionados:</strong> {files.length}</div>
           </div>}
           {error && <p className="mp-form-error" role="alert">{error}</p>}
-          <div className="mp-form-actions">{step > 1 ? <button type="button" className="mp-button" onClick={previous} disabled={submitMutation.isPending}>VOLTAR</button> : <span />}{step < 3 ? <button type="button" className="mp-button" onClick={next}>CONTINUAR ↗</button> : <button type="submit" className="mp-button" disabled={submitMutation.isPending}>{submitMutation.isPending ? "ENVIANDO…" : "REVISAR E ENVIAR ↗"}</button>}</div>
+          <div className="mp-form-actions">{step > 1 ? <button type="button" className="mp-button" onClick={previous} disabled={submitMutation.isPending}>VOLTAR</button> : <span />}{step < 3 ? <button key="next" type="button" className="mp-button" onClick={next}>CONTINUAR ↗</button> : <button key="submit" type="submit" className="mp-button" disabled={submitMutation.isPending}>{submitMutation.isPending ? "ENVIANDO…" : "REVISAR E ENVIAR ↗"}</button>}</div>
         </form>
       </>}
     </div>

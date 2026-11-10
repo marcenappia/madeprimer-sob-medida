@@ -20,4 +20,5 @@
 - Não inserir registros de demonstração nem testar criando orçamentos no banco compartilhado. Os módulos de Atendimento IA permanecem inativos sem autorização futura e não devem chamar modelos. Qualquer futura visualização por IA autorizada deve mostrar exatamente: “Visualização conceitual — não é projeto executivo.”
 - Commit normal em `main` pode sincronizar o editor Lovable; não force-push, não publique no domínio oficial sem autorização explícita e não inclua credenciais, dados pessoais ou a allowlist no Git.
 - The Express server reads `--port <n>` before `PORT`/3000, and `build:dev` runs a static Vite build; the Lovable preview depends on both.
+- `npm run verify:quote` (scripts/verify-quote-flow.py) drives /orcamento on mobile and desktop with submissions and uploads intercepted locally and external hosts blocked, so it never writes to the shared database; keep it updated when the form changes.
 - Vite writes the static site to the root of `dist/` and the Express bundle to `build/server/`; Lovable publishing needs `dist/index.html` and must not ship server code as static files.
