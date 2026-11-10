@@ -33,6 +33,15 @@ PNG_BYTES = bytes.fromhex(
 FAKE_REFERENCE = "MP-TESTE-0001"
 
 
+async def expect_blocked(page: Page, label: str, message: str) -> None:
+    """O envio deve ser barrado: pela mensagem do formulário ou pela validação nativa do campo."""
+    field = page.get_by_label(label)
+    natively_invalid = await field.evaluate("el => !el.validity.valid")
+    if not natively_invalid:
+        await expect(page.get_by_role("alert")).to_contain_text(message)
+    await expect(page.get_by_role("status")).to_have_count(0)
+
+
 async def run_viewport(browser, name: str, viewport: dict, attachment: Path) -> None:
     context = await browser.new_context(viewport=viewport, is_mobile=name == "celular")
     page = await context.new_page()
@@ -92,7 +101,7 @@ async def run_viewport(browser, name: str, viewport: dict, attachment: Path) -> 
     submit_btn = page.get_by_role("button", name="REVISAR E ENVIAR")
     await expect(submit_btn).to_be_visible()
     await submit_btn.click()
-    await expect(alert).to_contain_text("Informe seu nome")
+    await expect_blocked(page, "Nome", "Informe seu nome")
     await page.get_by_label("Nome").fill("Pessoa Teste")
     await page.get_by_label("Telefone / WhatsApp").fill("abc")
     await page.get_by_label("E-mail").fill("pessoa@exemplo.com")
@@ -101,7 +110,7 @@ async def run_viewport(browser, name: str, viewport: dict, attachment: Path) -> 
     await page.get_by_label("Telefone / WhatsApp").fill("(11) 90000-0000")
     await page.get_by_label("E-mail").fill("email-invalido")
     await submit_btn.click()
-    await expect(alert).to_contain_text("e-mail válido")
+    await expect_blocked(page, "E-mail", "e-mail válido")
     await page.get_by_label("E-mail").fill("pessoa@exemplo.com")
     await submit_btn.click()
     await expect(alert).to_contain_text("política de privacidade")
