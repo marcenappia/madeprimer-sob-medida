@@ -1,4 +1,4 @@
-import { useRef, type TouchEvent } from "react";
+import { useRef, type RefObject, type TouchEvent } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import type { ProjectImage } from "./content";
 
@@ -33,9 +33,10 @@ type Props = {
   images: ProjectImage[];
   index: number;
   onMove: (direction: -1 | 1) => void;
+  returnFocusTo?: RefObject<HTMLElement | null>;
 };
 
-export function ProjectLightbox({ open, onOpenChange, title, images, index, onMove }: Props) {
+export function ProjectLightbox({ open, onOpenChange, title, images, index, onMove, returnFocusTo }: Props) {
   const image = images[index];
   const swipe = useSwipe(onMove);
   const many = images.length > 1;
@@ -46,6 +47,8 @@ export function ProjectLightbox({ open, onOpenChange, title, images, index, onMo
       <Dialog.Content
         className="mp-lightbox"
         aria-describedby="mp-lightbox-help"
+        aria-modal="true"
+        onCloseAutoFocus={(event) => { if (returnFocusTo?.current) { event.preventDefault(); returnFocusTo.current.focus(); } }}
         onKeyDown={(event) => {
           if (!many) return;
           if (event.key === "ArrowRight") { event.preventDefault(); onMove(1); }

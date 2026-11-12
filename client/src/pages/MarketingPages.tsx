@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, useParams } from "wouter";
 import { trpc } from "@/lib/trpc";
@@ -166,6 +166,7 @@ export function ProjectDetailPage() {
   const project = base44Projects.find((item) => item.slug === params.slug);
   const [activeIndex, setActiveIndex] = useState(() => (project ? firstAvailableIndex(project.images) : 0));
   const [fullscreen, setFullscreen] = useState(false);
+  const zoomButton = useRef<HTMLButtonElement>(null);
   const imageCount = project?.images.length ?? 0;
   const move = (direction: -1 | 1) => setActiveIndex((current) => (current + direction + imageCount) % Math.max(imageCount, 1));
   const swipe = useSwipe((direction) => { if (imageCount > 1) move(direction); });
@@ -180,11 +181,11 @@ export function ProjectDetailPage() {
     <div className="mp-detail-gallery">
       {image && <div className="mp-detail-stage" {...swipe}>
         <GalleryImage image={image} className="mp-detail-image" loading="eager" />
-        {!image.unavailable && <button type="button" className="mp-detail-zoom" onClick={() => setFullscreen(true)} aria-label={`Ampliar foto ${activeIndex + 1} de ${project.images.length} em tela cheia`}>AMPLIAR ⤢</button>}
+        {!image.unavailable && <button ref={zoomButton} type="button" className="mp-detail-zoom" onClick={() => setFullscreen(true)} aria-label={`Ampliar foto ${activeIndex + 1} de ${project.images.length} em tela cheia`}>AMPLIAR ⤢</button>}
       </div>}
       {project.images.length > 1 && <div className="mp-detail-gallery-controls"><button type="button" onClick={() => move(-1)} aria-label="Imagem anterior">← ANTERIOR</button><span aria-live="polite">{String(activeIndex + 1).padStart(2, "0")} / {String(project.images.length).padStart(2, "0")}</span><button type="button" onClick={() => move(1)} aria-label="Próxima imagem">PRÓXIMA →</button></div>}
       <div className="mp-detail-thumbnails">{project.images.map((photo, index) => <button key={photo.src} type="button" aria-label={`Ver imagem ${index + 1} de ${project.images.length}`} aria-pressed={activeIndex === index} onClick={() => setActiveIndex(index)}>{photo.unavailable ? <span>Imagem indisponível</span> : <img src={photo.src} alt="" loading="lazy" />}</button>)}</div>
-      <ProjectLightbox open={fullscreen} onOpenChange={setFullscreen} title={project.title} images={project.images} index={activeIndex} onMove={move} />
+      <ProjectLightbox open={fullscreen} onOpenChange={setFullscreen} title={project.title} images={project.images} index={activeIndex} onMove={move} returnFocusTo={zoomButton} />
     </div>
     <div className="mp-project-actions"><a href={whatsappHref} className="mp-button" target="_blank" rel="noreferrer">SOLICITAR PROJETO SEMELHANTE <Arrow /></a><Link href="/orcamento" className="mp-text-link">PEDIR ORÇAMENTO DETALHADO</Link></div>
     <section className="mp-closing"><p className="mp-eyebrow">MADEPRIMER · PLANEJADOS DE INTERIORES</p><h2>Quer um projeto como este?</h2><p>{projectDetailCtaDescription}</p><Link href="/orcamento" className="mp-button">INICIAR MEU PROJETO <Arrow /></Link></section>
