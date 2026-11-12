@@ -77,6 +77,9 @@ async def run_viewport(browser, name: str, viewport: dict, attachment: Path) -> 
     alert = page.get_by_role("alert")
     next_btn = page.get_by_role("button", name="CONTINUAR")
 
+    current_step = page.locator(".mp-form-progress [aria-current=step]")
+    await expect(current_step).to_contain_text("Projeto")
+
     # Etapa 1: tentar avançar vazio deve mostrar erro.
     await next_btn.click()
     await expect(alert).to_contain_text("Informe o ambiente")
@@ -87,6 +90,7 @@ async def run_viewport(browser, name: str, viewport: dict, attachment: Path) -> 
     await expect(alert).to_have_count(0)
 
     # Etapa 2: campos opcionais + anexo.
+    await expect(current_step).to_contain_text("Detalhes")
     await expect(page.get_by_label("Medidas aproximadas")).to_be_visible()
     await page.get_by_label("Medidas aproximadas").fill("3 m × 2,4 m")
     await page.get_by_label("Prazo desejado").fill("Próximos 3 meses")
@@ -98,6 +102,10 @@ async def run_viewport(browser, name: str, viewport: dict, attachment: Path) -> 
     await next_btn.click()
 
     # Etapa 3: validações de contato.
+    await expect(current_step).to_contain_text("Contato")
+    font_size = await page.get_by_label("Nome").evaluate("el => parseFloat(getComputedStyle(el).fontSize)")
+    if name == "celular":
+        assert font_size >= 16, f"[celular] campos com {font_size}px fazem o iPhone dar zoom"
     submit_btn = page.get_by_role("button", name="REVISAR E ENVIAR")
     await expect(submit_btn).to_be_visible()
     await submit_btn.click()
