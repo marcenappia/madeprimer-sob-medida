@@ -22,6 +22,7 @@ import {
   type PortfolioItem,
   type ProjectImage,
 } from "../components/site/content";
+import { ProjectLightbox, useSwipe } from "../components/site/ProjectLightbox";
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
@@ -164,9 +165,12 @@ export function ProjectDetailPage() {
   const whatsappNumber = primaryPhone.replace(/\D/g, "").replace(/^55/, "");
   const project = base44Projects.find((item) => item.slug === params.slug);
   const [activeIndex, setActiveIndex] = useState(() => (project ? firstAvailableIndex(project.images) : 0));
+  const [fullscreen, setFullscreen] = useState(false);
+  const imageCount = project?.images.length ?? 0;
+  const move = (direction: -1 | 1) => setActiveIndex((current) => (current + direction + imageCount) % Math.max(imageCount, 1));
+  const swipe = useSwipe((direction) => { if (imageCount > 1) move(direction); });
   if (!project) return <section className="mp-section mp-inner-page"><SectionIntro eyebrow="PORTFÓLIO" title="Projeto não encontrado" /><Link className="mp-button" href="/projetos">VOLTAR A PROJETOS <Arrow /></Link></section>;
   const image = project.images[activeIndex % project.images.length];
-  const move = (direction: -1 | 1) => setActiveIndex((current) => (current + direction + project.images.length) % project.images.length);
   const quoteText = `Olá! Vim pelo site e me inspirei no projeto "${project.title}". Gostaria de discutir um projeto semelhante para meu ambiente.`;
   const whatsappHref = `https://wa.me/55${whatsappNumber}?text=${encodeURIComponent(quoteText)}`;
   return <section className="mp-section mp-inner-page mp-project-detail">
@@ -174,9 +178,13 @@ export function ProjectDetailPage() {
     <SectionIntro eyebrow={project.category.toUpperCase()} title={project.title}>{project.description || undefined}</SectionIntro>
     <div className="mp-project-facts"><p className="mp-eyebrow">FICHA TÉCNICA</p><span>CATEGORIA</span><strong>{project.category}</strong></div>
     <div className="mp-detail-gallery">
-      {image && <GalleryImage image={image} className="mp-detail-image" loading="eager" />}
+      {image && <div className="mp-detail-stage" {...swipe}>
+        <GalleryImage image={image} className="mp-detail-image" loading="eager" />
+        {!image.unavailable && <button type="button" className="mp-detail-zoom" onClick={() => setFullscreen(true)} aria-label={`Ampliar foto ${activeIndex + 1} de ${project.images.length} em tela cheia`}>AMPLIAR ⤢</button>}
+      </div>}
       {project.images.length > 1 && <div className="mp-detail-gallery-controls"><button type="button" onClick={() => move(-1)} aria-label="Imagem anterior">← ANTERIOR</button><span aria-live="polite">{String(activeIndex + 1).padStart(2, "0")} / {String(project.images.length).padStart(2, "0")}</span><button type="button" onClick={() => move(1)} aria-label="Próxima imagem">PRÓXIMA →</button></div>}
-      <div className="mp-detail-thumbnails">{project.images.map((photo, index) => <button key={photo.src} type="button" aria-label={`Ver imagem ${index + 1}`} aria-pressed={activeIndex === index} onClick={() => setActiveIndex(index)}>{photo.unavailable ? <span>Imagem indisponível</span> : <img src={photo.src} alt="" loading="lazy" />}</button>)}</div>
+      <div className="mp-detail-thumbnails">{project.images.map((photo, index) => <button key={photo.src} type="button" aria-label={`Ver imagem ${index + 1} de ${project.images.length}`} aria-pressed={activeIndex === index} onClick={() => setActiveIndex(index)}>{photo.unavailable ? <span>Imagem indisponível</span> : <img src={photo.src} alt="" loading="lazy" />}</button>)}</div>
+      <ProjectLightbox open={fullscreen} onOpenChange={setFullscreen} title={project.title} images={project.images} index={activeIndex} onMove={move} />
     </div>
     <div className="mp-project-actions"><a href={whatsappHref} className="mp-button" target="_blank" rel="noreferrer">SOLICITAR PROJETO SEMELHANTE <Arrow /></a><Link href="/orcamento" className="mp-text-link">PEDIR ORÇAMENTO DETALHADO</Link></div>
     <section className="mp-closing"><p className="mp-eyebrow">MADEPRIMER · PLANEJADOS DE INTERIORES</p><h2>Quer um projeto como este?</h2><p>{projectDetailCtaDescription}</p><Link href="/orcamento" className="mp-button">INICIAR MEU PROJETO <Arrow /></Link></section>

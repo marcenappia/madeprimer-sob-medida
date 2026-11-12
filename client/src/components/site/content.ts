@@ -131,7 +131,14 @@ export const base44Projects: Base44Project[] = [
     category: "Salas e Painéis de TV",
     filter: "SALAS",
     description: "Sala com painel ripado com frisos metálicos e iluminação em LED, painel para TV, rack suspenso e cristaleira com prateleiras de vidro. A galeria apresenta diferentes vistas do ambiente.",
-    images: gallery("sala-ripado", "Sala com painel ripado e rack suspenso", 6),
+    images: [
+      { src: "/assets/base44/sala-ripado-01.jpg", alt: "Vista frontal da sala: painel ripado claro com frisos metálicos e LED junto ao teto, TV sobre painel de pedra, rack suspenso com seis gavetas e cristaleira iluminada à direita" },
+      { src: "/assets/base44/sala-ripado-02.jpg", alt: "Vista em diagonal da sala com o painel ripado iluminado, a TV, o rack suspenso com luz por baixo, a cristaleira de vidro e uma poltrona ao lado da janela" },
+      { src: "/assets/base44/sala-ripado-03.jpg", alt: "Sala vista de lado: painel ripado cobrindo a parede, rack suspenso com iluminação inferior, cristaleira iluminada e duas poltronas reclináveis claras" },
+      { src: "/assets/base44/sala-ripado-04.jpg", alt: "Vista ampla da sala com o painel ripado seguindo até a passagem para o corredor, o rack suspenso e duas poltronas reclináveis" },
+      { src: "/assets/base44/sala-ripado-05.jpg", alt: "Detalhe em ângulo baixo do rack suspenso com gavetas cinza, do painel ripado com frisos metálicos e da cristaleira com prateleiras de vidro" },
+      { src: "/assets/base44/sala-ripado-06.jpg", alt: "Detalhe do canto do painel ripado, com frisos metálicos verticais e fita de LED junto ao teto" },
+    ],
   },
 ];
 
