@@ -125,6 +125,14 @@ export const base44Projects: Base44Project[] = [
     description: "Marcenaria especializada em bancadas. A galeria apresenta composições de bancadas e mobiliário para cozinhas do portfólio MadePrimer.",
     images: gallery("special", "Bancadas sob medida", 6, "png"),
   },
+  {
+    slug: "sala-painel-ripado-rack-suspenso",
+    title: "Sala com painel ripado e rack suspenso",
+    category: "Salas e Painéis de TV",
+    filter: "SALAS",
+    description: "Sala com painel ripado com frisos metálicos e iluminação em LED, painel para TV, rack suspenso e cristaleira com prateleiras de vidro. A galeria apresenta diferentes vistas do ambiente.",
+    images: gallery("sala-ripado", "Sala com painel ripado e rack suspenso", 6),
+  },
 ];
 
 export const portfolioItems: PortfolioItem[] = [
@@ -138,7 +146,7 @@ export const portfolioItems: PortfolioItem[] = [
 export const projectGroups = [
   { id: "COZINHAS", title: "COZINHAS PLANEJADAS", sourceCount: "5 fotos · 2 projetos" },
   { id: "DORMITÓRIOS", title: "CLOSETS E DORMITÓRIOS", sourceCount: "3 fotos · 1 projeto" },
-  { id: "SALAS", title: "SALAS E PAINÉIS DE TV", sourceCount: "31 fotos · 2 projetos" },
+  { id: "SALAS", title: "SALAS E PAINÉIS DE TV", sourceCount: "37 fotos · 3 projetos" },
   { id: "GOURMET", title: "ESPAÇOS GOURMET", sourceCount: "1 foto · 1 projeto" },
   { id: "BANHEIROS", title: "BANHEIROS", sourceCount: "4 fotos · 1 projeto" },
   { id: "CORPORATIVO", title: "CORPORATIVO", sourceCount: "3 fotos · 1 projeto" },
