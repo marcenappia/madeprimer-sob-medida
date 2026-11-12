@@ -20,6 +20,7 @@ const emptyForm: FormValues = {
 };
 const MAX_FILES = 6;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const STEP_LABELS = ["Projeto", "Detalhes", "Contato"];
 const ACCEPTED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
 
 export default function QuotePage() {
@@ -108,7 +109,7 @@ export default function QuotePage() {
     <header className="mp-section-intro"><p className="mp-eyebrow">MADEPRIMER · PLANEJADOS DE INTERIORES</p><h1>Solicitar orçamento</h1><p className="mp-lead">Conte um pouco sobre o seu projeto.</p></header>
     <div className="mp-form-card">
       {result ? <div className="mp-form-success" role="status"><p className="mp-eyebrow">SOLICITAÇÃO REGISTRADA</p><h2>Obrigado por conversar com a MadePrimer.</h2><p>Recebemos as informações do seu projeto.</p><p className="mp-reference">Referência: {result.reference}</p>{result.attachmentWarning && <p className="mp-form-error">{result.attachmentWarning}</p>}<Link className="mp-button" href="/">VOLTAR AO INÍCIO</Link></div> : <>
-        <div className="mp-form-progress" aria-label={`Etapa ${step} de 3`}>{[1, 2, 3].map((number) => <span key={number} className={number === step ? "is-active" : number < step ? "is-done" : ""}>{number}</span>)}<i /><span className="mp-field-hint">ETAPA {step} DE 3</span></div>
+        <ol className="mp-form-progress" aria-label={`Etapa ${step} de 3: ${STEP_LABELS[step - 1]}`}>{STEP_LABELS.map((label, index) => { const number = index + 1; const state = number === step ? "is-active" : number < step ? "is-done" : ""; return <li key={label} className={`mp-step ${state}`} aria-current={number === step ? "step" : undefined}><span className={state}>{number}</span><em>{label}</em></li>; })}<li className="mp-step-meta" aria-hidden="true"><i /><span className="mp-field-hint">ETAPA {step} DE 3</span></li></ol>
         <form onSubmit={handleSubmit}>
           {step === 1 && <div className="mp-form-grid">
             <label className="mp-field"><span>Ambiente</span><select required value={form.projectType} onChange={(event) => setField("projectType", event.target.value)}><option value="">Selecione</option>{["Cozinha", "Dormitório", "Sala / living", "Área gourmet", "Corporativo", "Projeto especial", "Outro"].map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
