@@ -1,4 +1,4 @@
-import { useRef, type RefObject, type TouchEvent } from "react";
+import { useId, useRef, type RefObject, type TouchEvent } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import type { ProjectImage } from "./content";
 
@@ -40,13 +40,17 @@ export function ProjectLightbox({ open, onOpenChange, title, images, index, onMo
   const image = images[index];
   const swipe = useSwipe(onMove);
   const many = images.length > 1;
+  const statusId = useId();
+  const helpId = useId();
+  const position = `Foto ${index + 1} de ${images.length}`;
+  const announcement = image?.unavailable ? `${position}: imagem indisponível.` : image?.alt ? `${position}: ${image.alt}.` : `${position}.`;
 
   return <Dialog.Root open={open} onOpenChange={onOpenChange}>
     <Dialog.Portal>
       <Dialog.Overlay className="mp-lightbox-overlay" />
       <Dialog.Content
         className="mp-lightbox"
-        aria-describedby="mp-lightbox-help"
+        aria-describedby={`${statusId} ${helpId}`}
         aria-modal="true"
         onCloseAutoFocus={(event) => { if (returnFocusTo?.current) { event.preventDefault(); returnFocusTo.current.focus(); } }}
         onKeyDown={(event) => {
@@ -57,10 +61,12 @@ export function ProjectLightbox({ open, onOpenChange, title, images, index, onMo
       >
         <div className="mp-lightbox-bar">
           <Dialog.Title className="mp-lightbox-title">{title}</Dialog.Title>
-          <span className="mp-lightbox-counter" aria-live="polite">{pad(index + 1)} / {pad(images.length)}</span>
+          <span className="mp-lightbox-counter" aria-hidden="true">{pad(index + 1)} / {pad(images.length)}</span>
           <Dialog.Close className="mp-lightbox-close" aria-label="Fechar tela cheia">FECHAR ✕</Dialog.Close>
         </div>
-        <p id="mp-lightbox-help" className="mp-sr-only">
+        {/* Screen readers hear "Foto N de T" + description on open (via aria-describedby) and on every change (live region). */}
+        <p id={statusId} className="mp-sr-only" role="status" aria-live="polite" aria-atomic="true">{announcement}</p>
+        <p id={helpId} className="mp-sr-only">
           {many ? "Use as setas do teclado ou deslize para os lados para ver outras fotos. Pressione Esc para fechar." : "Pressione Esc para fechar."}
         </p>
         <div className="mp-lightbox-stage" {...swipe}>
